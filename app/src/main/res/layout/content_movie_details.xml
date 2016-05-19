@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.elson.popmovies.MovieDetails"
+    tools:showIn="@layout/activity_movie_details"
+    android:layout_width="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:background="@color/background_green"
+            android:id="@+id/title"
+            android:fontFamily="casual"
+            android:textSize="30sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/poster"
+            android:layout_below="@+id/title"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/year"
+            android:layout_alignTop="@+id/poster"
+            android:layout_toEndOf="@+id/poster"
+            android:fontFamily="casual"
+            android:textSize="30sp"
+            android:layout_marginStart="40dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=""
+            android:id="@+id/duration"
+            android:layout_below="@+id/year"
+            android:fontFamily="casual"
+            android:textSize="30sp"
+            android:layout_alignStart="@+id/year" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:fontFamily="casual"
+            android:textSize="25sp"
+            android:id="@+id/rating"
+            android:layout_alignStart="@+id/year"
+            android:layout_below="@+id/duration" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/plot"
+            android:fontFamily="casual"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/poster"/>
+
+    </RelativeLayout>
+
+</ScrollView>

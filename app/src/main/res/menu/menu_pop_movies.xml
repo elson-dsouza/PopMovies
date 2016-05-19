@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.elson.popmovies.PopMovies">
+    <item
+        android:id="@+id/action_popular"
+        android:orderInCategory="100"
+        android:enabled="true"
+        android:title="@string/action_popular"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_rating"
+        android:orderInCategory="100"
+        android:enabled="true"
+        android:title="@string/action_rating"
+        app:showAsAction="never" />
+</menu>
