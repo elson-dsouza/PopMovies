@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class FetchMovies extends AsyncTask<String, Void, String> {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private final String API_KEY = "";//Add your API key here
+    private final String API_KEY = "3c21be60a67ea12e374f3faf6e7d12c3";//Add your API key here
     private ArrayList<String> result;
 
     @Override
