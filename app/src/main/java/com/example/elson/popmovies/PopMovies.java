@@ -139,25 +139,6 @@ public class PopMovies extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class GridAdapter extends ArrayAdapter<String> {
-        public GridAdapter(Context applicationContext, List<String> movieList) {
-            super(applicationContext,0, movieList);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            String poster=getItem(position);
-            String t[]=poster.split(" ");
-            poster=t[1];
-            if(convertView==null){
-                convertView= LayoutInflater.from(getContext()).inflate(R.layout.movies,parent,false);
-            }
-            ImageView iconView = (ImageView) convertView.findViewById(R.id.movieView);
-            Glide.with(getApplicationContext()).load("http://image.tmdb.org/t/p/w185/"+poster).into(iconView);
-            return convertView;
-        }
-    }
-
     private ArrayList<String> getDataFromJson(String jsonStr) throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
