@@ -8,22 +8,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.elson.pojo.Result;
 
 import java.util.List;
 
 /**
  * Created by Elson on 20-05-2016.
  */
-public class GridAdapter extends ArrayAdapter<String> {
-    public GridAdapter(Context applicationContext, List<String> movieList) {
+public class GridAdapter extends ArrayAdapter<Result> {
+    public GridAdapter(Context applicationContext, List<Result> movieList) {
         super(applicationContext,0, movieList);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String poster=getItem(position);
-        String t[]=poster.split(" ");
-        poster=t[1];
+        String poster=getItem(position).getPoster();
         if(convertView==null){
             convertView= LayoutInflater.from(getContext()).inflate(R.layout.movies,parent,false);
         }

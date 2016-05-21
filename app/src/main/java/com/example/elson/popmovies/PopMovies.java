@@ -1,40 +1,48 @@
 package com.example.elson.popmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.elson.pojo.MovieHeader;
+import com.google.android.gms.common.api.Result;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class PopMovies extends AppCompatActivity {
+
+    private final String API_KEY;//Add your API key here
 
     private static final String MOVIELIST ="MOVIEKEY" ;
     private static final String QUERY = "QUERYKEY";
     private GridView movieGridView;
-    private ArrayList<String> movieList;
-    private ArrayAdapter<String>movieListAdapter;
+    private ArrayList<com.example.elson.pojo.Result> movieList;
+    private ArrayAdapter<com.example.elson.pojo.Result>movieListAdapter;
     private String query;
+    private MovieHeader movies;
+    private Retrofit retrofit;
 
     public PopMovies() {
     }
@@ -44,29 +52,34 @@ public class PopMovies extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         query=preferences.getString(QUERY,"popular");
         setContentView(R.layout.activity_pop_movies);
-        FetchMovies fetchMovies=new FetchMovies();
-        try {
-            fetchMovies.execute(query);
-            String json=fetchMovies.get();
-            movieList=getDataFromJson(json);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        super.onCreate(savedInstanceState);
-        movieListAdapter= new GridAdapter(getApplicationContext(),movieList);
-        movieGridView=(GridView)findViewById(R.id.movieGrid);
-        movieGridView.setAdapter(movieListAdapter);
-        movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        retrofit=new Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        FetchData fetch=retrofit.create(FetchData.class);
+        Call<MovieHeader> call=fetch.getMovies(query,API_KEY);
+        call.enqueue(new Callback<MovieHeader>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movieList.get(position));
-                startActivity(movieDetailIntent);
+            public void onResponse(Call<MovieHeader> call, Response<MovieHeader> response) {
+                movies=response.body();
+                movieListAdapter= new GridAdapter(getApplicationContext(),movies.getResult());
+                movieGridView=(GridView)findViewById(R.id.movieGrid);
+                movieGridView.setAdapter(movieListAdapter);
+                movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
+                        startActivity(movieDetailIntent);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<MovieHeader> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
             }
         });
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -79,7 +92,7 @@ public class PopMovies extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList(MOVIELIST,movieList);
+        outState.putParcelable(MOVIELIST,movies);
         outState.putString(QUERY,query);
 
     }
@@ -87,15 +100,15 @@ public class PopMovies extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        movieList=savedInstanceState.getStringArrayList(MOVIELIST);
+        movies=savedInstanceState.getParcelable(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        movieListAdapter= new GridAdapter(getApplicationContext(),movieList);
+        movieListAdapter= new GridAdapter(getApplicationContext(),movies.getResult());
         movieGridView=(GridView)findViewById(R.id.movieGrid);
         movieGridView.setAdapter(movieListAdapter);
         movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movieList.get(position));
+                Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
                 startActivity(movieDetailIntent);
             }
         });
@@ -120,38 +133,33 @@ public class PopMovies extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(QUERY,query);
         editor.apply();
-        try {
-            FetchMovies fetchMovies=new FetchMovies();
-            fetchMovies.execute(query);
-            String json=fetchMovies.get();
-            movieList=getDataFromJson(json);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        movieListAdapter= new GridAdapter(getApplicationContext(),movieList);
-        movieGridView=(GridView)findViewById(R.id.movieGrid);
-        movieGridView.setAdapter(movieListAdapter);
+        retrofit=new Retrofit.Builder()
+                .baseUrl("https://api.themoviedb.org")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        FetchData fetch=retrofit.create(FetchData.class);
+        Call<MovieHeader> call=fetch.getMovies(query,API_KEY);
+        call.enqueue(new Callback<MovieHeader>() {
+            @Override
+            public void onResponse(Call<MovieHeader> call, Response<MovieHeader> response) {
+                movies=response.body();
+                movieListAdapter= new GridAdapter(getApplicationContext(),movies.getResult());
+                movieGridView=(GridView)findViewById(R.id.movieGrid);
+                movieGridView.setAdapter(movieListAdapter);
+                movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
+                        startActivity(movieDetailIntent);
+                    }
+                });
+            }
 
+            @Override
+            public void onFailure(Call<MovieHeader> call, Throwable t) {
+                Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
+            }
+        });
         return super.onOptionsItemSelected(item);
-    }
-
-    private ArrayList<String> getDataFromJson(String jsonStr) throws JSONException {
-
-        // These are the names of the JSON objects that need to be extracted.
-        ArrayList<String> result = new ArrayList<>();
-
-        JSONObject json = new JSONObject(jsonStr);
-        JSONArray jsonArray=json.getJSONArray("results");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject t=jsonArray.getJSONObject(i);
-            long j=t.getLong("id");
-            String k=t.getString("poster_path");
-            result.add(Long.toString(j)+" "+k);
-        }
-        return result;
     }
 }
