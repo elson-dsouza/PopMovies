@@ -8,15 +8,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.elson.pojo.Result;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.elson.popmovies.pojo.MovieData;
 
 import java.util.List;
 
-/**
- * Created by Elson on 20-05-2016.
- */
-public class GridAdapter extends ArrayAdapter<Result> {
-    public GridAdapter(Context applicationContext, List<Result> movieList) {
+public class GridAdapter extends ArrayAdapter<MovieData> {
+    public GridAdapter(Context applicationContext, List<MovieData> movieList) {
         super(applicationContext,0, movieList);
     }
 
@@ -27,7 +25,7 @@ public class GridAdapter extends ArrayAdapter<Result> {
             convertView= LayoutInflater.from(getContext()).inflate(R.layout.movies,parent,false);
         }
         ImageView iconView = (ImageView) convertView.findViewById(R.id.movieView);
-        Glide.with(getContext()).load("http://image.tmdb.org/t/p/w185/"+poster).into(iconView);
+        Glide.with(getContext()).load("http://image.tmdb.org/t/p/w185/"+poster).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(iconView);
         return convertView;
     }
 }

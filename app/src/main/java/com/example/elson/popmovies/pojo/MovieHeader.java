@@ -1,4 +1,4 @@
-package com.example.elson.pojo;
+package com.example.elson.popmovies.pojo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -14,10 +14,10 @@ import java.util.List;
 public class MovieHeader implements Parcelable {
 
     @SerializedName("page") int page;
-    @SerializedName("results") List<Result> result;
+    @SerializedName("results") List<MovieData> result;
     @SerializedName("total_pages") int total;
 
-    public List<Result> getResult(){
+    public List<MovieData> getResult(){
         return result;
     }
 
@@ -25,7 +25,7 @@ public class MovieHeader implements Parcelable {
         page = in.readInt();
         if (in.readByte() == 0x01) {
             result = new ArrayList<>();
-            in.readList(result, Result.class.getClassLoader());
+            in.readList(result, MovieData.class.getClassLoader());
         } else {
             result = null;
         }

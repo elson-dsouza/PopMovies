@@ -1,9 +1,9 @@
 package com.example.elson.popmovies;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -14,16 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.elson.pojo.MovieHeader;
-import com.google.android.gms.common.api.Result;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.elson.popmovies.pojo.MovieHeader;
+import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,16 +27,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PopMovies extends AppCompatActivity {
 
-    private final String API_KEY;//Add your API key here
+    private final String API_KEY="";//Add your API key here
 
     private static final String MOVIELIST ="MOVIEKEY" ;
     private static final String QUERY = "QUERYKEY";
     private GridView movieGridView;
-    private ArrayList<com.example.elson.pojo.Result> movieList;
-    private ArrayAdapter<com.example.elson.pojo.Result>movieListAdapter;
+    private ArrayList<com.example.elson.popmovies.pojo.MovieData> movieList;
+    private ArrayAdapter<com.example.elson.popmovies.pojo.MovieData>movieListAdapter;
     private String query;
     private MovieHeader movies;
     private Retrofit retrofit;
+    private boolean mtwoPane;
 
     public PopMovies() {
     }
@@ -57,6 +52,7 @@ public class PopMovies extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         FetchData fetch=retrofit.create(FetchData.class);
+        mtwoPane = findViewById(R.id.container) != null;
         Call<MovieHeader> call=fetch.getMovies(query,API_KEY);
         call.enqueue(new Callback<MovieHeader>() {
             @Override
@@ -68,8 +64,14 @@ public class PopMovies extends AppCompatActivity {
                 movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
-                        startActivity(movieDetailIntent);
+                        if(mtwoPane) {
+                            FragmentManager fragmentManager=getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.container,new MovieDetailFragment()).commit();
+                        }
+                        else {
+                            Intent movieDetailIntent = new Intent(getApplication(), MovieDetail.class).putExtra("Id", movies.getResult().get(position));
+                            startActivity(movieDetailIntent);
+                        }
                     }
                 });
             }
@@ -79,6 +81,7 @@ public class PopMovies extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Please check network and try again",Toast.LENGTH_SHORT).show();
             }
         });
+        Stetho.initializeWithDefaults(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -108,8 +111,14 @@ public class PopMovies extends AppCompatActivity {
         movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
-                startActivity(movieDetailIntent);
+                if(mtwoPane) {
+                    FragmentManager fragmentManager=getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.container,new MovieDetailFragment()).commit();
+                }
+                else {
+                    Intent movieDetailIntent = new Intent(getApplication(), MovieDetail.class).putExtra("Id", movies.getResult().get(position));
+                    startActivity(movieDetailIntent);
+                }
             }
         });
     }
@@ -149,8 +158,14 @@ public class PopMovies extends AppCompatActivity {
                 movieGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent movieDetailIntent=new Intent(getApplication(),MovieDetails.class).putExtra("Id",movies.getResult().get(position));
-                        startActivity(movieDetailIntent);
+                        if(mtwoPane) {
+                            FragmentManager fragmentManager=getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.container,new MovieDetailFragment()).commit();
+                        }
+                        else {
+                            Intent movieDetailIntent = new Intent(getApplication(), MovieDetail.class).putExtra("Id", movies.getResult().get(position));
+                            startActivity(movieDetailIntent);
+                        }
                     }
                 });
             }

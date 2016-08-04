@@ -1,7 +1,7 @@
 package com.example.elson.popmovies;
 
-import com.example.elson.pojo.MovieData;
-import com.example.elson.pojo.MovieHeader;
+import com.example.elson.popmovies.pojo.MovieData;
+import com.example.elson.popmovies.pojo.MovieHeader;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
