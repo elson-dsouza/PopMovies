@@ -47,15 +47,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".SelectedMovieDetails"
-            android:label="@string/title_activity_selected_movie_details"
-            android:parentActivityName=".PopMovies"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.elson.popmovies.PopMovies" />
-        </activity>
-        <activity
             android:name=".MovieDetail"
             android:label="@string/title_activity_movie_detail"
             android:parentActivityName=".PopMovies"

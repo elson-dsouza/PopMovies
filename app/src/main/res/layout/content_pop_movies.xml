@@ -12,7 +12,7 @@
     tools:context="com.example.elson.popmovies.PopMovies"
     tools:showIn="@layout/activity_pop_movies">
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/movieGrid"
@@ -20,5 +20,6 @@
         android:verticalSpacing="0dp"
         android:horizontalSpacing="0dp"
         android:stretchMode="columnWidth"
-         />
+        android:scrollbars="vertical"/>
+
 </FrameLayout>
