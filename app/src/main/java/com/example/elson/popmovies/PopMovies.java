@@ -13,9 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
+import com.example.elson.popmovies.pojo.MovieData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.facebook.stetho.Stetho;
 import com.paginate.Paginate;
@@ -30,14 +30,16 @@ import butterknife.ButterKnife;
 
 public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
+    private static final String MOVIELIST = "MOVIEKEY";
+    private static final String QUERY = "QUERYKEY";
+    private final int NUM_COLS = 2;
     //Views injected using ButterKnife
     @BindView(R.id.movieGrid)
     RecyclerView movieGridView;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
-
-    private static final String MOVIELIST ="MOVIEKEY" ;
-    private static final String QUERY = "QUERYKEY";
+    @BindView(R.id.container)
+    FrameLayout container;
     private List<com.example.elson.popmovies.pojo.MovieData> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
@@ -47,11 +49,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private int currentPgNo=1;
     private int totalPgNo=1;
     private boolean loading = false;
-
-    private final int NUM_COLS = 2;
-
-    public PopMovies() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +60,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         setContentView(R.layout.activity_pop_movies);
         movieList=new ArrayList<>();
 
+        //Setup 2 pane UI
+        mtwoPane = container != null;
+
         //Initialize butterknife and stetho
         ButterKnife.bind(this);
         Stetho.initializeWithDefaults(this);
@@ -73,21 +73,11 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
         movieGridView.setLayoutManager(movieLayoutManager);
-
+        movieGridView.setItemViewCacheSize(10);
 
        //Loads the initial contents
-        MovieFetcher fetch=new MovieFetcher();
-        fetch.execute(query,Integer.toString(currentPgNo));
-        try {
-            MovieHeader tempMovie=fetch.get();
-            currentPgNo=tempMovie.getCurrent();
-            totalPgNo=tempMovie.getTotal();
-            movieList=tempMovie.getResult();
-            movieListAdapter=new GridAdapter(movieList);
-            movieGridView.setAdapter(movieListAdapter);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        movieListAdapter = new GridAdapter(getMovies(1));
+        movieGridView.setAdapter(movieListAdapter);
 
         //Setup swipe to refresh
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -95,20 +85,10 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             public void onRefresh() {
                 //Loads the initial contents
                 refreshLayout.setRefreshing(true);
-                MovieFetcher fetch=new MovieFetcher();
-                fetch.execute(query,Integer.toString(currentPgNo));
-                try {
-                    MovieHeader tempMovie=fetch.get();
-                    currentPgNo=tempMovie.getCurrent();
-                    totalPgNo=tempMovie.getTotal();
-                    movieList=tempMovie.getResult();
-                    movieListAdapter.clear();
-                    movieListAdapter.add(movieList);
-                    movieListAdapter.notifyDataSetChanged();
-                    refreshLayout.setRefreshing(false);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                movieListAdapter.clear();
+                movieListAdapter.add(getMovies(1));
+                movieListAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
         refreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
@@ -125,7 +105,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
                     }
                 })
                 .build();
-
     }
 
     @Override
@@ -145,9 +124,8 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putParcelable(MOVIELIST,movies);
+        outState.putParcelable(MOVIELIST, movies);
         outState.putString(QUERY,query);
-
     }
 
     @Override
@@ -155,8 +133,8 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         super.onRestoreInstanceState(savedInstanceState);
         movies=savedInstanceState.getParcelable(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        //movieListAdapter= new GridAdapter(movies.getResult());
-        //movieGridView.setAdapter(movieListAdapter);
+        movieListAdapter = new GridAdapter(movies.getResult());
+        movieGridView.setAdapter(movieListAdapter);
     }
 
     @Override
@@ -183,20 +161,8 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         editor.apply();
         movieListAdapter.clear();
         movieListAdapter.notifyDataSetChanged();
-
-        MovieFetcher fetch=new MovieFetcher();
-        fetch.execute(query,Integer.toString(1));
-        try {
-            MovieHeader tempMovie=fetch.get();
-            currentPgNo=tempMovie.getCurrent();
-            totalPgNo=tempMovie.getTotal();
-            movieList=tempMovie.getResult();
-            movieListAdapter.add(movieList);
-            movieListAdapter.notifyDataSetChanged();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
+        movieListAdapter.add(getMovies(1));
+        movieListAdapter.notifyDataSetChanged();
         return true;
     }
 
@@ -204,17 +170,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     public synchronized void onLoadMore() {
         Log.d("Paginate", "onLoadMore");
         loading = true;
-        MovieFetcher fetch=new MovieFetcher();
-        fetch.execute(query,Integer.toString(currentPgNo+1));
-        try {
-            MovieHeader tempMovie=fetch.get();
-            currentPgNo=tempMovie.getCurrent();
-            totalPgNo=tempMovie.getTotal();
-            movieList=tempMovie.getResult();
-            movieListAdapter.add(movieList);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        movieListAdapter.add(getMovies(currentPgNo + 1));
         loading = false;
     }
 
@@ -228,30 +184,33 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         return currentPgNo==totalPgNo;
     }
 
+    private List<MovieData> getMovies(int curpg) {
+        MovieFetcher fetch = new MovieFetcher();
+        fetch.execute(query, Integer.toString(curpg));
+        try {
+            MovieHeader tempMovie = fetch.get();
+            currentPgNo = tempMovie.getCurrent();
+            totalPgNo = tempMovie.getTotal();
+            movieList = tempMovie.getResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return movieList;
+    }
+
     private class CustomLoadingListItemCreator implements LoadingListItemCreator {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.loading, parent, false);
-            return new VH(view);
+            return new RecyclerView.ViewHolder(view) {
+            };
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            // Bind custom loading row if needed
-            VH vh = (VH) holder;
 
         }
-    }
-    static class VH extends RecyclerView.ViewHolder {
-        TextView tvLoading;
-        ProgressBar imgLoading;
 
-        public VH(View itemView) {
-            super(itemView);
-            tvLoading = (TextView) itemView.findViewById(R.id.tv_loading_text);
-            imgLoading= (ProgressBar) itemView.findViewById(R.id.progressBar);
-        }
     }
-
 }

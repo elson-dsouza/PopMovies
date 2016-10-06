@@ -23,45 +23,24 @@ public class GridAdapter extends RecyclerView.Adapter {
         this.movieList=movieList;
     }
 
-    public GridAdapter() {
-
-    }
-
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView movieName;
-        private TextView movieRating;
-        private ImageView moviePoster;
-        private ImageButton favoriteButton;
-
-        public MovieViewHolder(View itemView) {
-            super(itemView);
-            movieName = (TextView) itemView.findViewById(R.id.movieName);
-            moviePoster = (ImageView) itemView.findViewById(R.id.moviePoster);
-            favoriteButton = (ImageButton) itemView.findViewById(R.id.favoriteButton);
-            movieRating = (TextView) itemView.findViewById(R.id.movieRating);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context=parent.getContext();
+        context = parent.getContext();
         View view = View.inflate(context, R.layout.movies, null);
         return new MovieViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if(position==movieList.size())
+        if (position == movieList.size())
             return;
         final MovieData movie = movieList.get(position);
         final MovieViewHolder movieViewHolder = (MovieViewHolder) holder;
 
         movieViewHolder.movieName.setText(movie.getTitle());
-        movieViewHolder.movieRating.setText("\t"+movie.getRating()+"\t");
-        Glide.with(context).load("http://image.tmdb.org/t/p/w185/"+movie.getPoster()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(movieViewHolder.moviePoster);
+        movieViewHolder.movieRating.setText("\t" + movie.getRating() + "\t");
+        Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + movie.getPoster()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(movieViewHolder.moviePoster);
 //        if(LocalStoreUtil.hasInFavorites(context, movies.getId())) {
 //            movieViewHolder.mFavoriteButton.setSelected(true);
 //            movies.setFavorite(true);
@@ -105,6 +84,22 @@ public class GridAdapter extends RecyclerView.Adapter {
     public void add(List<MovieData> data){ movieList.addAll(data); }
 
     public void clear(){movieList.clear();}
+
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView movieName;
+        private TextView movieRating;
+        private ImageView moviePoster;
+        private ImageButton favoriteButton;
+
+        public MovieViewHolder(View itemView) {
+            super(itemView);
+            movieName = (TextView) itemView.findViewById(R.id.movieName);
+            moviePoster = (ImageView) itemView.findViewById(R.id.moviePoster);
+            favoriteButton = (ImageButton) itemView.findViewById(R.id.favoriteButton);
+            movieRating = (TextView) itemView.findViewById(R.id.movieRating);
+        }
+    }
 
 }
 
