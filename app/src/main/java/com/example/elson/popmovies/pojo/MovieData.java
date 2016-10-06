@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class MovieData implements Parcelable {
 
     @SerializedName("id") Long id;
-    @SerializedName("original_title") String title;
+    @SerializedName("title") String title;
     @SerializedName("runtime") int duration;
     @SerializedName("release_date")String release;
     @SerializedName("vote_average") Double rating;
@@ -16,6 +16,8 @@ public class MovieData implements Parcelable {
     @SerializedName("poster_path") String poster;
     @SerializedName("adult") Boolean isAdult;
     @SerializedName("backdrop_path") String backdrop;
+    @SerializedName("popularity") private double popularity;
+    @SerializedName("video") private boolean video;
 
     public String getTitle() {
         return title;
@@ -23,10 +25,6 @@ public class MovieData implements Parcelable {
 
     public String getDuration() {
         return Integer.toString(duration)+"min";
-    }
-
-    public String getYear() {
-        return release.split("-")[0];
     }
 
     public String getRating() {
@@ -45,6 +43,26 @@ public class MovieData implements Parcelable {
         return id;
     }
 
+    public String getRelease() {
+        return release;
+    }
+
+    public Boolean getIsAdult() {
+        return isAdult;
+    }
+
+    public String getBackdrop() {
+        return backdrop;
+    }
+
+    public boolean getIsVideo() {
+        return video;
+    }
+
+    public String getPopularity() {
+        return Double.toString(popularity);
+    }
+
 
     protected MovieData(Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readLong();
@@ -57,6 +75,8 @@ public class MovieData implements Parcelable {
         byte isAdultVal = in.readByte();
         isAdult = isAdultVal == 0x02 ? null : isAdultVal != 0x00;
         backdrop = in.readString();
+        popularity = in.readDouble();
+        video = in.readByte() != 0x00;
     }
 
     @Override
@@ -89,6 +109,8 @@ public class MovieData implements Parcelable {
             dest.writeByte((byte) (isAdult ? 0x01 : 0x00));
         }
         dest.writeString(backdrop);
+        dest.writeDouble(popularity);
+        dest.writeByte((byte) (video ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
