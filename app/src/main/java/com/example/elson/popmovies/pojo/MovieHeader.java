@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class MovieHeader implements Parcelable {
 
+
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<MovieHeader> CREATOR = new Parcelable.Creator<MovieHeader>() {
         @Override

@@ -3,6 +3,7 @@ package com.example.elson.popmovies;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,13 +39,13 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     RecyclerView movieGridView;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
+    @Nullable
     @BindView(R.id.container)
     FrameLayout container;
-    private List<com.example.elson.popmovies.pojo.MovieData> movieList;
+    private ArrayList<MovieData> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
     private String query="popular";
-    private MovieHeader movies;
     private boolean mtwoPane;
     private int currentPgNo=1;
     private int totalPgNo=1;
@@ -69,6 +70,12 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
         //Know one pane or two pane UI is loaded
         mtwoPane = findViewById(R.id.container) != null;
+        if (mtwoPane) {
+            MovieDetailFragment detailFragment = new MovieDetailFragment();
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, detailFragment)
+                    .commit();
+        }
 
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
@@ -124,16 +131,16 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(MOVIELIST, movies);
+        outState.putParcelableArrayList(MOVIELIST, movieList);
         outState.putString(QUERY,query);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        movies=savedInstanceState.getParcelable(MOVIELIST);
+        movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        movieListAdapter = new GridAdapter(movies.getResult());
+        movieListAdapter = new GridAdapter(movieList);
         movieGridView.setAdapter(movieListAdapter);
     }
 
@@ -186,16 +193,18 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     private List<MovieData> getMovies(int curpg) {
         MovieFetcher fetch = new MovieFetcher();
+        List<MovieData> tempMovieList = null;
         fetch.execute(query, Integer.toString(curpg));
         try {
             MovieHeader tempMovie = fetch.get();
             currentPgNo = tempMovie.getCurrent();
             totalPgNo = tempMovie.getTotal();
-            movieList = tempMovie.getResult();
+            tempMovieList = tempMovie.getResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return movieList;
+        movieList.addAll(tempMovieList);
+        return tempMovieList;
     }
 
     private class CustomLoadingListItemCreator implements LoadingListItemCreator {
