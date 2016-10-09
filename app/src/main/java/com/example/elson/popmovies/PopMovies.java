@@ -61,21 +61,18 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         setContentView(R.layout.activity_pop_movies);
         movieList=new ArrayList<>();
 
-        //Setup 2 pane UI
-        mtwoPane = container != null;
-
         //Initialize butterknife and stetho
         ButterKnife.bind(this);
         Stetho.initializeWithDefaults(this);
 
         //Know one pane or two pane UI is loaded
-        mtwoPane = findViewById(R.id.container) != null;
-        if (mtwoPane) {
-            MovieDetailFragment detailFragment = new MovieDetailFragment();
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, detailFragment)
-                    .commit();
-        }
+        mtwoPane = container != null;
+//        if (mtwoPane) {
+//            MovieDetailFragment detailFragment = new MovieDetailFragment();
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.container, detailFragment)
+//                    .commit();
+//        }
 
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
@@ -83,7 +80,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         movieGridView.setItemViewCacheSize(10);
 
        //Loads the initial contents
-        movieListAdapter = new GridAdapter(getMovies(1));
+        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager());
         movieGridView.setAdapter(movieListAdapter);
 
         //Setup swipe to refresh
@@ -140,7 +137,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        movieListAdapter = new GridAdapter(movieList);
+        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager());
         movieGridView.setAdapter(movieListAdapter);
     }
 

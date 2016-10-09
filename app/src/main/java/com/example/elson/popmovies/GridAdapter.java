@@ -1,6 +1,9 @@
 package com.example.elson.popmovies;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +21,13 @@ public class GridAdapter extends RecyclerView.Adapter {
 
     private List<MovieData> movieList;
     private Context context;
+    private boolean isTwoPane;
+    private FragmentManager fm;
 
-    public GridAdapter(List<MovieData> movieList) {
+    public GridAdapter(List<MovieData> movieList, boolean isTwoPane, FragmentManager fm) {
         this.movieList=movieList;
+        this.isTwoPane = isTwoPane;
+        this.fm = fm;
     }
 
     @Override
@@ -31,7 +38,7 @@ public class GridAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
         if (position == movieList.size())
             return;
@@ -52,9 +59,19 @@ public class GridAdapter extends RecyclerView.Adapter {
         movieViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if(mCallbacks!=null) {
-//                    mCallbacks.onMovieClick(movies);
-//                }
+                if (!isTwoPane) {
+                    Intent i = new Intent(v.getContext(), MovieDetail.class);
+                    i.putExtra("data", movieList.get(holder.getAdapterPosition()));
+                    v.getContext().startActivity(i);
+
+                } else {
+                    MovieDetailFragment detailFragment = new MovieDetailFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("data", movieList.get(holder.getAdapterPosition()));
+                    fm.beginTransaction()
+                            .replace(R.id.container, detailFragment)
+                            .commit();
+                }
             }
         });
 
