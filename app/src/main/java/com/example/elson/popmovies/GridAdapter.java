@@ -68,6 +68,7 @@ public class GridAdapter extends RecyclerView.Adapter {
                     MovieDetailFragment detailFragment = new MovieDetailFragment();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("data", movieList.get(holder.getAdapterPosition()));
+                    detailFragment.setArguments(bundle);
                     fm.beginTransaction()
                             .replace(R.id.container, detailFragment)
                             .commit();

@@ -25,7 +25,6 @@ public class MoviesContract {
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_BACKGROUND_PATH="background";
         public static final String COLUMN_DURATION="duration";
-        public static final String COLUMN_POPULARITY = "popularity";
         public static final String COLUMN_VIDEO = "video";
 
         // create content uri

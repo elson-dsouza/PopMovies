@@ -1,6 +1,6 @@
 package com.example.elson.popmovies;
 
-import com.example.elson.popmovies.pojo.MovieData;
+import com.example.elson.popmovies.pojo.MovieFullData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 
 import retrofit2.Call;
@@ -18,5 +18,5 @@ public interface FetchData {
     Call<MovieHeader> getMovies(@Path("task") String task, @Query("api_key") String key, @Query("page") String pg);
 
     @GET("/3/movie/{id}")
-    Call<MovieData> getData(@Path("id") Long id, @Query("api_key") String key);
+    Call<MovieFullData> getData(@Path("id") Long id, @Query("api_key") String key);
 }

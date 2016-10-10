@@ -69,6 +69,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         mtwoPane = container != null;
 //        if (mtwoPane) {
 //            MovieDetailFragment detailFragment = new MovieDetailFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable("data", movieList.get(0));
+//            detailFragment.setArguments(bundle);
 //            getFragmentManager().beginTransaction()
 //                    .replace(R.id.container, detailFragment)
 //                    .commit();

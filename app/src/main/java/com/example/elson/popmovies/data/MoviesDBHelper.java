@@ -1,12 +1,9 @@
 package com.example.elson.popmovies.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import com.example.elson.popmovies.pojo.MovieData;
 
 public class MoviesDBHelper extends SQLiteOpenHelper {
 
@@ -32,7 +29,6 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
                 MoviesContract.MovieEntry.COLUMN_DESCRIPTION+" TEXT , "+
                 MoviesContract.MovieEntry.COLUMN_BACKGROUND_PATH+" TEXT , "+
                 MoviesContract.MovieEntry.COLUMN_DURATION+" TEXT , "+
-                MoviesContract.MovieEntry.COLUMN_POPULARITY+" TEXT , "+
                 MoviesContract.MovieEntry.COLUMN_VIDEO+" BOOLEAN , "+
                 " );";
 
@@ -46,17 +42,18 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public static ContentValues getMovieContentValues(MovieData movieData){
-        ContentValues contentValues=new ContentValues();
-        contentValues.put(MoviesContract.MovieEntry._ID,movieData.getId());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE,movieData.getTitle());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH,movieData.getPoster());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_ISADULT,movieData.getIsAdult());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_RATING,movieData.getRating());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE,movieData.getRelease());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_DESCRIPTION,movieData.getDescription());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_BACKGROUND_PATH,movieData.getBackdrop());
-        contentValues.put(MoviesContract.MovieEntry.COLUMN_DURATION,movieData.getDuration());
-        return contentValues;
-    }
+//    public static ContentValues getMovieContentValues(MovieData movieData){
+//        ContentValues contentValues=new ContentValues();
+//        contentValues.put(MoviesContract.MovieEntry._ID,movieData.getId());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE,movieData.getTitle());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH,movieData.getPoster());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_ISADULT,movieData.getIsAdult());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_RATING,movieData.getRating());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE,movieData.getRelease());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_DESCRIPTION,movieData.getDescription());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_BACKGROUND_PATH,movieData.getBackdrop());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_DURATION,movieData.getDuration());
+//        contentValues.put(MoviesContract.MovieEntry.COLUMN_VIDEO,movieData.getIsVideo());
+//        return contentValues;
+//    }
 }
