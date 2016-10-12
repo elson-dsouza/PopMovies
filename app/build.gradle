@@ -40,6 +40,7 @@ dependencies {
     compile 'com.android.support:support-v4:24.0.0'
     compile 'com.google.android.gms:play-services-appindexing:9.2.0'
     compile 'com.github.markomilos:paginate:0.5.1'
+    compile files('Libraries/YouTubeAndroidPlayerApi.jar')
 }
 
 repositories {

@@ -2,6 +2,7 @@ package com.example.elson.popmovies;
 
 import com.example.elson.popmovies.pojo.MovieFullData;
 import com.example.elson.popmovies.pojo.MovieHeader;
+import com.example.elson.popmovies.pojo.VideoResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,4 +20,8 @@ public interface FetchData {
 
     @GET("/3/movie/{id}")
     Call<MovieFullData> getData(@Path("id") Long id, @Query("api_key") String key);
+
+    @GET("/3/movie/{id}/videos")
+    Call<VideoResponse> getVideos(@Path("id") String id, @Query("api_key") String key);
+
 }

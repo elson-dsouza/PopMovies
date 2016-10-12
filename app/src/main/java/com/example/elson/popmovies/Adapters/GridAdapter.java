@@ -1,4 +1,4 @@
-package com.example.elson.popmovies;
+package com.example.elson.popmovies.Adapters;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.elson.popmovies.MovieDetail;
+import com.example.elson.popmovies.MovieDetailFragment;
+import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.pojo.MovieData;
 
 import java.util.List;
@@ -40,9 +43,7 @@ public class GridAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        if (position == movieList.size())
-            return;
-        final MovieData movie = movieList.get(position);
+        MovieData movie = movieList.get(position);
         final MovieViewHolder movieViewHolder = (MovieViewHolder) holder;
 
         movieViewHolder.movieName.setText(movie.getTitle());
@@ -88,15 +89,15 @@ public class GridAdapter extends RecyclerView.Adapter {
             }
         });
     }
-
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
+//
+//    @Override
+//    public int getItemViewType(int position) {
+//        return super.getItemViewType(position);
+//    }
 
     @Override
     public int getItemCount() {
-        return (movieList!=null)?movieList.size()+1:0;
+        return (movieList != null) ? movieList.size() : 0;
     }
 
     public void add(List<MovieData> data){ movieList.addAll(data); }

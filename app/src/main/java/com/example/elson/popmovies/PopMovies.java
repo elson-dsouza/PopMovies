@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.example.elson.popmovies.Adapters.GridAdapter;
+import com.example.elson.popmovies.Asyncs.MovieFetcher;
 import com.example.elson.popmovies.pojo.MovieData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.facebook.stetho.Stetho;
@@ -61,21 +63,10 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         setContentView(R.layout.activity_pop_movies);
         movieList=new ArrayList<>();
 
-        //Initialize butterknife and stetho
+        //Initialize butterknife, stetho and 2 pane UI
         ButterKnife.bind(this);
         Stetho.initializeWithDefaults(this);
-
-        //Know one pane or two pane UI is loaded
         mtwoPane = container != null;
-//        if (mtwoPane) {
-//            MovieDetailFragment detailFragment = new MovieDetailFragment();
-//            Bundle bundle = new Bundle();
-//            bundle.putParcelable("data", movieList.get(0));
-//            detailFragment.setArguments(bundle);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.container, detailFragment)
-//                    .commit();
-//        }
 
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
@@ -112,6 +103,17 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
                     }
                 })
                 .build();
+
+        //Setup default second pane
+        if (mtwoPane) {
+            MovieDetailFragment detailFragment = new MovieDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("data", movieList.get(0));
+            detailFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, detailFragment)
+                    .commit();
+        }
     }
 
     @Override
