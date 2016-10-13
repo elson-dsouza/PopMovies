@@ -19,6 +19,7 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'API_KEY', '"3c21be60a67ea12e374f3faf6e7d12c3"'
+        it.buildConfigField 'String', 'JW_PLAYER_KEY', '"7wEwRLcz9z/Rlu0B2I+n2n35f2jUDCpQdrx6FQ=="'
     }
 }
 apply plugin: 'com.neenbedankt.android-apt'
@@ -38,9 +39,10 @@ dependencies {
     compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.android.support:recyclerview-v7:24.0.0'
     compile 'com.android.support:support-v4:24.0.0'
-    compile 'com.google.android.gms:play-services-appindexing:9.2.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.3.0'
     compile 'com.github.markomilos:paginate:0.5.1'
     compile files('Libraries/YouTubeAndroidPlayerApi.jar')
+    compile 'com.longtailvideo.jwplayer:jwplayer-android-sdk:2.4.2+'
 }
 
 repositories {

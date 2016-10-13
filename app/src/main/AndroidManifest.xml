@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".PopMovies"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -49,6 +50,7 @@
 
         <activity
             android:name=".MovieDetail"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_movie_detail"
             android:parentActivityName=".PopMovies"
             android:theme="@style/AppTheme.NoActionBar">
