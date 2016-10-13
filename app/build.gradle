@@ -18,8 +18,8 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'API_KEY', '"3c21be60a67ea12e374f3faf6e7d12c3"'
-        it.buildConfigField 'String', 'JW_PLAYER_KEY', '"7wEwRLcz9z/Rlu0B2I+n2n35f2jUDCpQdrx6FQ=="'
+        it.buildConfigField 'String', 'API_KEY', TheMovieDb
+        it.buildConfigField 'String', 'JW_PLAYER_KEY', JWPlayer
     }
 }
 apply plugin: 'com.neenbedankt.android-apt'
