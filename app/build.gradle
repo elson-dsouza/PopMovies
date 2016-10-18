@@ -19,7 +19,7 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'API_KEY', TheMovieDb
-        it.buildConfigField 'String', 'JW_PLAYER_KEY', JWPlayer
+        it.buildConfigField 'String', 'YOUTUBE_API_KEY', YoutubeApi
     }
 }
 apply plugin: 'com.neenbedankt.android-apt'
@@ -42,7 +42,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.3.0'
     compile 'com.github.markomilos:paginate:0.5.1'
     compile files('Libraries/YouTubeAndroidPlayerApi.jar')
-    compile 'com.longtailvideo.jwplayer:jwplayer-android-sdk:2.4.2+'
 }
 
 repositories {
