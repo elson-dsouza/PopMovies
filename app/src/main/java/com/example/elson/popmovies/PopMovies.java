@@ -8,21 +8,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.example.elson.popmovies.Adapters.GridAdapter;
+import com.example.elson.popmovies.Adapters.VideoAdapter;
 import com.example.elson.popmovies.Asyncs.MovieFetcher;
 import com.example.elson.popmovies.pojo.MovieData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.facebook.stetho.Stetho;
 import com.paginate.Paginate;
-import com.paginate.recycler.LoadingListItemCreator;
 import com.paginate.recycler.LoadingListItemSpanLookup;
 
 import java.util.ArrayList;
@@ -71,7 +67,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
         movieGridView.setLayoutManager(movieLayoutManager);
-        movieGridView.setItemViewCacheSize(10);
+        //movieGridView.setItemViewCacheSize(10);
 
        //Loads the initial contents
         movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager());
@@ -138,6 +134,18 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
+    public void onBackPressed() {
+        CustomYoutubeFragment youTubePlayerFragment = (CustomYoutubeFragment) getFragmentManager().findFragmentByTag(VideoAdapter.PLAYER);
+        if (youTubePlayerFragment != null) {
+            if (youTubePlayerFragment.isFullScreen()) {
+                youTubePlayerFragment.setFullScreen(false);
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
@@ -177,7 +185,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @Override
     public synchronized void onLoadMore() {
-        Log.d("Paginate", "onLoadMore");
         loading = true;
         movieListAdapter.add(getMovies(currentPgNo + 1));
         loading = false;
@@ -190,8 +197,10 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @Override
     public boolean hasLoadedAllItems() {
+
         return currentPgNo==totalPgNo;
     }
+
 
     private List<MovieData> getMovies(int curpg) {
         MovieFetcher fetch = new MovieFetcher();
@@ -207,21 +216,5 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         }
         movieList.addAll(tempMovieList);
         return tempMovieList;
-    }
-
-    private class CustomLoadingListItemCreator implements LoadingListItemCreator {
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View view = inflater.inflate(R.layout.loading, parent, false);
-            return new RecyclerView.ViewHolder(view) {
-            };
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-        }
-
     }
 }
