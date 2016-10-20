@@ -48,6 +48,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private int currentPgNo=1;
     private int totalPgNo=1;
     private boolean loading = false;
+    private CustomLoadingListItemCreator loadingItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +89,11 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         refreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
 
         //Setup pagination
+        loadingItem = new CustomLoadingListItemCreator();
         Paginate.with(movieGridView, this)
                 .setLoadingTriggerThreshold(2)
                 .addLoadingListItem(true)
-                .setLoadingListItemCreator(new CustomLoadingListItemCreator())
+                .setLoadingListItemCreator(loadingItem)
                 .setLoadingListItemSpanSizeLookup(new LoadingListItemSpanLookup() {
                     @Override
                     public int getSpanSize() {
@@ -186,7 +188,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     @Override
     public synchronized void onLoadMore() {
         loading = true;
+        loadingItem.setVisibility(true);
         movieListAdapter.add(getMovies(currentPgNo + 1));
+        loadingItem.setVisibility(false);
         loading = false;
     }
 
@@ -197,7 +201,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @Override
     public boolean hasLoadedAllItems() {
-
         return currentPgNo==totalPgNo;
     }
 
