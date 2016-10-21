@@ -42,6 +42,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.3.0'
     compile 'com.github.markomilos:paginate:0.5.1'
     compile files('Libraries/YouTubeAndroidPlayerApi.jar')
+    apply plugin: 'realm-android'
 }
 
 repositories {

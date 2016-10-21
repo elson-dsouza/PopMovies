@@ -13,29 +13,46 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.elson.popmovies.BuildConfig;
+import com.example.elson.popmovies.FetchData;
 import com.example.elson.popmovies.MovieDetail;
 import com.example.elson.popmovies.MovieDetailFragment;
 import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.pojo.MovieData;
+import com.example.elson.popmovies.pojo.MovieFullData;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class GridAdapter extends RecyclerView.Adapter {
 
+    private Realm realm;
     private List<MovieData> movieList;
     private Context context;
     private boolean isTwoPane;
     private FragmentManager fm;
 
-    public GridAdapter(List<MovieData> movieList, boolean isTwoPane, FragmentManager fm) {
+    public GridAdapter(List<MovieData> movieList, boolean isTwoPane, FragmentManager fm, Context context) {
         this.movieList=movieList;
         this.isTwoPane = isTwoPane;
+        this.context = context;
         this.fm = fm;
+
+        // Initialize Realm
+        Realm.init(context);
+        realm = Realm.getDefaultInstance();
+
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
         View view = View.inflate(context, R.layout.movies, null);
         return new MovieViewHolder(view);
     }
@@ -43,19 +60,15 @@ public class GridAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        MovieData movie = movieList.get(position);
+        final MovieData movie = movieList.get(position);
         final MovieViewHolder movieViewHolder = (MovieViewHolder) holder;
 
         movieViewHolder.movieName.setText(movie.getTitle());
         movieViewHolder.movieRating.setText("\t" + movie.getRating() + "\t");
         Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + movie.getPoster()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(movieViewHolder.moviePoster);
-//        if(LocalStoreUtil.hasInFavorites(context, movies.getId())) {
-//            movieViewHolder.mFavoriteButton.setSelected(true);
-//            movies.setFavorite(true);
-//        } else {
-//            movieViewHolder.mFavoriteButton.setSelected(false);
-//            movies.setFavorite(false);
-//        }
+        if (realm.where(MovieFullData.class).equalTo("id", movie.getId()).findFirst() != null)
+            movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_small);
+
 
         movieViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,12 +93,35 @@ public class GridAdapter extends RecyclerView.Adapter {
         movieViewHolder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RealmResults<MovieFullData> temp = realm.where(MovieFullData.class).equalTo("id", movie.getId()).findAll();
+                if (temp.size() == 0) {
+                    movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_small);
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("https://api.themoviedb.org")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    FetchData fetch = retrofit.create(FetchData.class);
+                    Call<MovieFullData> call = fetch.getData(Integer.toString(movie.getId()), BuildConfig.API_KEY);
+                    call.enqueue(new Callback<MovieFullData>() {
+                        @Override
+                        public void onResponse(Call<MovieFullData> call, Response<MovieFullData> response) {
+                            MovieFullData data = response.body();
+                            realm.beginTransaction();
+                            realm.copyToRealmOrUpdate(data);
+                            realm.commitTransaction();
+                        }
 
-                movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_small);
-//                if(mCallbacks!=null) {
-//                    movieViewHolder.mFavoriteButton.setSelected(!movies.isFavorite());
-//                    mCallbacks.onFavoriteClick(movies);
-//                }
+                        @Override
+                        public void onFailure(Call<MovieFullData> call, Throwable t) {
+
+                        }
+                    });
+                } else {
+                    movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_outline_small);
+                    realm.beginTransaction();
+                    temp.deleteAllFromRealm();
+                    realm.commitTransaction();
+                }
             }
         });
     }

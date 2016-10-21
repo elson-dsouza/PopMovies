@@ -19,7 +19,8 @@ public class MovieData implements Parcelable {
             return new MovieData[size];
         }
     };
-    @SerializedName("id") Long id;
+    @SerializedName("id")
+    Integer id;
     @SerializedName("poster_path") String poster;
     @SerializedName("vote_average")
     Double rating;
@@ -27,7 +28,7 @@ public class MovieData implements Parcelable {
     String title;
 
     protected MovieData(Parcel in) {
-        id = in.readByte() == 0x00 ? null : in.readLong();
+        id = in.readByte() == 0x00 ? null : in.readInt();
         poster = in.readString();
         rating = in.readByte() == 0x00 ? null : in.readDouble();
         title = in.readString();
@@ -37,7 +38,7 @@ public class MovieData implements Parcelable {
         return poster;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -60,7 +61,7 @@ public class MovieData implements Parcelable {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeLong(id);
+            dest.writeInt(id);
         }
         dest.writeString(poster);
         if (rating == null) {

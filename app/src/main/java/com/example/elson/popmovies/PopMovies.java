@@ -71,7 +71,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         //movieGridView.setItemViewCacheSize(10);
 
        //Loads the initial contents
-        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager());
+        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), this);
         movieGridView.setAdapter(movieListAdapter);
 
         //Setup swipe to refresh
@@ -91,15 +91,14 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         //Setup pagination
         loadingItem = new CustomLoadingListItemCreator();
         Paginate.with(movieGridView, this)
-                .setLoadingTriggerThreshold(2)
                 .addLoadingListItem(true)
-                .setLoadingListItemCreator(loadingItem)
                 .setLoadingListItemSpanSizeLookup(new LoadingListItemSpanLookup() {
                     @Override
                     public int getSpanSize() {
                         return NUM_COLS;
                     }
                 })
+                .setLoadingListItemCreator(loadingItem)
                 .build();
 
         //Setup default second pane
@@ -112,6 +111,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
                     .replace(R.id.container, detailFragment)
                     .commit();
         }
+
     }
 
     @Override
@@ -152,7 +152,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager());
+        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), this);
         movieGridView.setAdapter(movieListAdapter);
     }
 

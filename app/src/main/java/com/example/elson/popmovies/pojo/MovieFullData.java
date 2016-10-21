@@ -2,12 +2,17 @@ package com.example.elson.popmovies.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by Elson on 10-10-2016.
  */
-public class MovieFullData {
+public class MovieFullData extends RealmObject {
+
+    @PrimaryKey
     @SerializedName("id")
-    Long id;
+    int id;
     @SerializedName("title")
     String title;
     @SerializedName("runtime")
@@ -24,8 +29,6 @@ public class MovieFullData {
     Boolean isAdult;
     @SerializedName("backdrop_path")
     String backdrop;
-    @SerializedName("video")
-    private boolean video;
 
     public String getTitle() {
         return title;
@@ -47,7 +50,7 @@ public class MovieFullData {
         return poster;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -61,10 +64,6 @@ public class MovieFullData {
 
     public String getBackdrop() {
         return backdrop;
-    }
-
-    public boolean getIsVideo() {
-        return video;
     }
 
 }
