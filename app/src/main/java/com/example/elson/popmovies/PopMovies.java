@@ -2,6 +2,7 @@ package com.example.elson.popmovies;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,11 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.elson.popmovies.Adapters.GridAdapter;
 import com.example.elson.popmovies.Adapters.VideoAdapter;
 import com.example.elson.popmovies.Asyncs.MovieFetcher;
-import com.example.elson.popmovies.pojo.MovieData;
+import com.example.elson.popmovies.pojo.MovieFullData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.facebook.stetho.Stetho;
 import com.paginate.Paginate;
@@ -26,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
@@ -40,7 +43,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     @Nullable
     @BindView(R.id.container)
     FrameLayout container;
-    private ArrayList<MovieData> movieList;
+    private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
     private String query="popular";
@@ -49,12 +52,14 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private int totalPgNo=1;
     private boolean loading = false;
     private CustomLoadingListItemCreator loadingItem;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         query=preferences.getString(QUERY,"popular");
+        realm = Realm.getDefaultInstance();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_movies);
@@ -71,7 +76,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         //movieGridView.setItemViewCacheSize(10);
 
        //Loads the initial contents
-        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), this);
+        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), realm);
         movieGridView.setAdapter(movieListAdapter);
 
         //Setup swipe to refresh
@@ -123,7 +128,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             menu.findItem(R.id.action_popular).setChecked(true);
         else if(query.contains("top_rated"))
             menu.findItem(R.id.action_rating).setChecked(true);
-        else
+        else if (query.contains("favourites"))
             menu.findItem(R.id.action_favourites).setChecked(true);
         return true;
     }
@@ -148,11 +153,17 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
-        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), this);
+        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), realm);
         movieGridView.setAdapter(movieListAdapter);
     }
 
@@ -171,6 +182,8 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         else if(id == R.id.action_popular) {
             query="popular";
 
+        } else if (id == R.id.action_favourites) {
+            query = "favourites";
         }
         super.onOptionsItemSelected(item);
 
@@ -205,19 +218,27 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
 
-    private List<MovieData> getMovies(int curpg) {
+    private List<Parcelable> getMovies(int curpg) {
+        List<Parcelable> tempMovieList = null;
+        if (query.contains("favourites") && curpg == 1) {
+            tempMovieList = (List) realm.where(MovieFullData.class).findAll();
+            return tempMovieList;
+        } else if (query.contains("favourites"))
+            return null;
         MovieFetcher fetch = new MovieFetcher();
-        List<MovieData> tempMovieList = null;
         fetch.execute(query, Integer.toString(curpg));
         try {
             MovieHeader tempMovie = fetch.get();
             currentPgNo = tempMovie.getCurrent();
             totalPgNo = tempMovie.getTotal();
-            tempMovieList = tempMovie.getResult();
+            tempMovieList = (List) tempMovie.getResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        movieList.addAll(tempMovieList);
+        if (tempMovieList == null)
+            Toast.makeText(this, "Please check your network connection or view Favourites!!!", Toast.LENGTH_SHORT).show();
+        else
+            movieList.addAll(tempMovieList);
         return tempMovieList;
     }
 }

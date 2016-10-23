@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.pojo.MovieData;
 import com.example.elson.popmovies.pojo.MovieFullData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -34,25 +36,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GridAdapter extends RecyclerView.Adapter {
 
     private Realm realm;
-    private List<MovieData> movieList;
+    private List<Parcelable> movieList;
     private Context context;
     private boolean isTwoPane;
     private FragmentManager fm;
+    private MovieData movie;
 
-    public GridAdapter(List<MovieData> movieList, boolean isTwoPane, FragmentManager fm, Context context) {
-        this.movieList=movieList;
+    public GridAdapter(List<Parcelable> movieList, boolean isTwoPane, FragmentManager fm, Realm realm) {
+        this.movieList = new ArrayList<>();
+        add(movieList);
         this.isTwoPane = isTwoPane;
-        this.context = context;
         this.fm = fm;
-
-        // Initialize Realm
-        Realm.init(context);
-        realm = Realm.getDefaultInstance();
+        this.realm = realm;
 
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View view = View.inflate(context, R.layout.movies, null);
         return new MovieViewHolder(view);
     }
@@ -60,7 +61,10 @@ public class GridAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
-        final MovieData movie = movieList.get(position);
+        if (movieList.get(position) instanceof MovieData)
+            movie = (MovieData) movieList.get(position);
+        else
+            movie = new MovieData((MovieFullData) movieList.get(position));
         final MovieViewHolder movieViewHolder = (MovieViewHolder) holder;
 
         movieViewHolder.movieName.setText(movie.getTitle());
@@ -68,6 +72,8 @@ public class GridAdapter extends RecyclerView.Adapter {
         Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + movie.getPoster()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(movieViewHolder.moviePoster);
         if (realm.where(MovieFullData.class).equalTo("id", movie.getId()).findFirst() != null)
             movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_small);
+        else
+            movieViewHolder.favoriteButton.setImageResource(R.drawable.ic_action_favorite_outline_small);
 
 
         movieViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -131,9 +137,14 @@ public class GridAdapter extends RecyclerView.Adapter {
         return (movieList != null) ? movieList.size() : 0;
     }
 
-    public void add(List<MovieData> data){ movieList.addAll(data); }
+    public void add(List<Parcelable> data) {
+        if (data != null)
+            movieList.addAll(data);
+    }
 
-    public void clear(){movieList.clear();}
+    public void clear() {
+        movieList.clear();
+    }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
 

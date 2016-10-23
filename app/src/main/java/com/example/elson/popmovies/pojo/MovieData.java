@@ -27,11 +27,18 @@ public class MovieData implements Parcelable {
     @SerializedName("title")
     String title;
 
-    protected MovieData(Parcel in) {
+    MovieData(Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readInt();
         poster = in.readString();
         rating = in.readByte() == 0x00 ? null : in.readDouble();
         title = in.readString();
+    }
+
+    public MovieData(MovieFullData data) {
+        this.id = data.getId();
+        this.poster = data.getPoster();
+        this.title = data.getTitle();
+        this.rating = data.getRawRating();
     }
 
     public String getPoster() {
