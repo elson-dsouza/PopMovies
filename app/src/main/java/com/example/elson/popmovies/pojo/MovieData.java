@@ -3,38 +3,45 @@ package com.example.elson.popmovies.pojo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class MovieData implements Parcelable {
 
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
+        @NonNull
         @Override
-        public MovieData createFromParcel(Parcel in) {
+        public MovieData createFromParcel(@NonNull Parcel in) {
             return new MovieData(in);
         }
 
+        @NonNull
         @Override
         public MovieData[] newArray(int size) {
             return new MovieData[size];
         }
     };
+    @Nullable
     @SerializedName("id")
     Integer id;
     @SerializedName("poster_path") String poster;
+    @Nullable
     @SerializedName("vote_average")
     Double rating;
     @SerializedName("title")
     String title;
 
-    MovieData(Parcel in) {
+    MovieData(@NonNull Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readInt();
         poster = in.readString();
         rating = in.readByte() == 0x00 ? null : in.readDouble();
         title = in.readString();
     }
 
-    public MovieData(MovieFullData data) {
+    public MovieData(@NonNull MovieFullData data) {
         this.id = data.getId();
         this.poster = data.getPoster();
         this.title = data.getTitle();
@@ -53,6 +60,7 @@ public class MovieData implements Parcelable {
         return title;
     }
 
+    @NonNull
     public String getRating() {
         return Double.toString(rating) + "/10";
     }
@@ -63,7 +71,7 @@ public class MovieData implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
             dest.writeByte((byte) (0x00));
         } else {

@@ -2,6 +2,8 @@ package com.example.elson.popmovies.Asyncs;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import com.example.elson.popmovies.BuildConfig;
 import com.example.elson.popmovies.FetchData;
 import com.example.elson.popmovies.pojo.ReviewsHeader;
@@ -16,6 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Elson on 19-10-2016.
  */
 public class ReviewFetcher extends AsyncTask<String, Void, ReviewsHeader> {
+    @Nullable
     @Override
     protected ReviewsHeader doInBackground(String... params) {
 

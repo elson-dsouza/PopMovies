@@ -1,5 +1,7 @@
 package com.example.elson.popmovies;
 
+import androidx.annotation.NonNull;
+
 import com.example.elson.popmovies.pojo.MovieFullData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.example.elson.popmovies.pojo.ReviewsHeader;
@@ -15,15 +17,18 @@ import retrofit2.http.Query;
  */
 public interface FetchData {
 
+    @NonNull
     @GET("/3/movie/{task}")
     Call<MovieHeader> getMovies(@Path("task") String task, @Query("api_key") String key, @Query("page") String pg);
 
+    @NonNull
     @GET("/3/movie/{id}")
     Call<MovieFullData> getData(@Path("id") String id, @Query("api_key") String key);
 
 //    @GET("/3/movie/{id}/videos")
 //    Call<VideoResponse> getVideos(@Path("id") String id, @Query("api_key") String key);
 
+    @NonNull
     @GET("/3/movie/{id}/reviews")
     Call<ReviewsHeader> getReviews(@Path("id") String id, @Query("api_key") String key, @Query("page") String pg);
 

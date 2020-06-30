@@ -3,6 +3,9 @@ package com.example.elson.popmovies.pojo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -15,11 +18,13 @@ public class MovieFullData extends RealmObject implements Parcelable {
 
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<MovieFullData> CREATOR = new Parcelable.Creator<MovieFullData>() {
+        @NonNull
         @Override
-        public MovieFullData createFromParcel(Parcel in) {
+        public MovieFullData createFromParcel(@NonNull Parcel in) {
             return new MovieFullData(in);
         }
 
+        @NonNull
         @Override
         public MovieFullData[] newArray(int size) {
             return new MovieFullData[size];
@@ -34,18 +39,20 @@ public class MovieFullData extends RealmObject implements Parcelable {
     int duration;
     @SerializedName("release_date")
     String release;
+    @Nullable
     @SerializedName("vote_average")
     Double rating;
     @SerializedName("overview")
     String description;
     @SerializedName("poster_path")
     String poster;
+    @Nullable
     @SerializedName("adult")
     Boolean isAdult;
     @SerializedName("backdrop_path")
     String backdrop;
 
-    protected MovieFullData(Parcel in) {
+    protected MovieFullData(@NonNull Parcel in) {
         id = in.readInt();
         title = in.readString();
         duration = in.readInt();
@@ -65,10 +72,12 @@ public class MovieFullData extends RealmObject implements Parcelable {
         return title;
     }
 
+    @NonNull
     public String getDuration() {
         return Integer.toString(duration) + "min";
     }
 
+    @NonNull
     public String getRating() {
         return Double.toString(rating) + "/10";
     }
@@ -89,6 +98,7 @@ public class MovieFullData extends RealmObject implements Parcelable {
         return release;
     }
 
+    @Nullable
     public Boolean getIsAdult() {
         return isAdult;
     }
@@ -103,7 +113,7 @@ public class MovieFullData extends RealmObject implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeInt(duration);
@@ -124,6 +134,7 @@ public class MovieFullData extends RealmObject implements Parcelable {
         dest.writeString(backdrop);
     }
 
+    @Nullable
     public Double getRawRating() {
         return rating;
     }

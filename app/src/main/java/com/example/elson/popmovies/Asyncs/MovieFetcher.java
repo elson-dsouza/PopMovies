@@ -2,6 +2,8 @@ package com.example.elson.popmovies.Asyncs;
 
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import com.example.elson.popmovies.BuildConfig;
 import com.example.elson.popmovies.FetchData;
 import com.example.elson.popmovies.pojo.MovieHeader;
@@ -17,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class MovieFetcher extends AsyncTask<String, Void, MovieHeader> {
 
+    @Nullable
     @Override
     protected MovieHeader doInBackground(String... params) {
 

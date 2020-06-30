@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolder> {
 
     private final Realm realm;
+    @NonNull
     private final List<Parcelable> movieList;
     private Context context;
     private final boolean isTwoPane;
@@ -54,7 +56,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
 
     @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         View view = View.inflate(context, R.layout.movies, null);
         return new MovieViewHolder(view);
@@ -109,7 +111,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
                         "BuildConfig.API_KEY");
                 call.enqueue(new Callback<MovieFullData>() {
                     @Override
-                    public void onResponse(Call<MovieFullData> call, Response<MovieFullData> response) {
+                    public void onResponse(Call<MovieFullData> call, @NonNull Response<MovieFullData> response) {
                         MovieFullData data = response.body();
                         realm.beginTransaction();
                         realm.copyToRealmOrUpdate(data);
@@ -134,7 +136,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
         return (movieList != null) ? movieList.size() : 0;
     }
 
-    public void add(List<Parcelable> data) {
+    public void add(@Nullable List<Parcelable> data) {
         if (data != null)
             movieList.addAll(data);
     }
@@ -145,12 +147,15 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
 
+        @NonNull
         private final TextView movieName;
+        @NonNull
         private final TextView movieRating;
+        @NonNull
         private final ImageView moviePoster;
         private final CheckBox favoriteButton;
 
-        public MovieViewHolder(View itemView) {
+        public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             movieName = (TextView) itemView.findViewById(R.id.movieName);
             moviePoster = (ImageView) itemView.findViewById(R.id.moviePoster);

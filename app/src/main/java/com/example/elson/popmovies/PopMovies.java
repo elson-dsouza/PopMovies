@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -35,16 +36,20 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private static final String QUERY = "QUERYKEY";
     private final int NUM_COLS = 2;
     //Views injected using ButterKnife
+    @Nullable
     @BindView(R.id.movieGrid)
     RecyclerView movieGridView;
+    @Nullable
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
     @Nullable
     @BindView(R.id.container)
     FrameLayout container;
+    @Nullable
     private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
+    @Nullable
     private String query="popular";
     private boolean mtwoPane;
     private int currentPgNo=1;
@@ -57,7 +62,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         query = preferences.getString(QUERY,"popular");
-        //realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_movies);
@@ -108,7 +113,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_pop_movies, menu);
 
@@ -122,7 +127,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIELIST, movieList);
         outState.putString(QUERY,query);
@@ -148,7 +153,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
         query=savedInstanceState.getString(QUERY);
@@ -157,7 +162,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -207,6 +212,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
 
+    @Nullable
     private List<Parcelable> getMovies(int curpg) {
         List<Parcelable> tempMovieList = null;
         if (query.contains("favourites") && curpg == 1) {
