@@ -12,12 +12,12 @@
     tools:context="com.example.elson.popmovies.PopMovies"
     tools:showIn="@layout/activity_pop_movies">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/refresh">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/movieGrid"
@@ -26,6 +26,6 @@
             android:stretchMode="columnWidth"
             android:scrollbars="vertical"/>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>

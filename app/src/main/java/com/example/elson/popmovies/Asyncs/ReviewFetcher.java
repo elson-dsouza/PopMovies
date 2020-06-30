@@ -24,7 +24,7 @@ public class ReviewFetcher extends AsyncTask<String, Void, ReviewsHeader> {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         FetchData fetch = retrofit.create(FetchData.class);
-        Call<ReviewsHeader> call = fetch.getReviews(params[0], BuildConfig.API_KEY, params[1]);
+        Call<ReviewsHeader> call = fetch.getReviews(params[0], "BuildConfig.API_KEY", params[1]);
         ReviewsHeader reviews = null;
         try {
             reviews = call.execute().body();

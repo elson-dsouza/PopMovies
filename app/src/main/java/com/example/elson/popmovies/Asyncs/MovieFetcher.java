@@ -25,7 +25,7 @@ public class MovieFetcher extends AsyncTask<String, Void, MovieHeader> {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         FetchData fetch = retrofit.create(FetchData.class);
-        Call<MovieHeader> call = fetch.getMovies(params[0], BuildConfig.API_KEY, params[1]);
+        Call<MovieHeader> call = fetch.getMovies(params[0], "BuildConfig.API_KEY", params[1]);
         MovieHeader movies = null;
         try {
             movies = call.execute().body();

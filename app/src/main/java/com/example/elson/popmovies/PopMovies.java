@@ -4,24 +4,23 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.elson.popmovies.Adapters.GridAdapter;
-import com.example.elson.popmovies.Adapters.VideoAdapter;
 import com.example.elson.popmovies.Asyncs.MovieFetcher;
 import com.example.elson.popmovies.pojo.MovieFullData;
 import com.example.elson.popmovies.pojo.MovieHeader;
 import com.facebook.stetho.Stetho;
 import com.paginate.Paginate;
-import com.paginate.recycler.LoadingListItemSpanLookup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +50,14 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private int currentPgNo=1;
     private int totalPgNo=1;
     private boolean loading = false;
-    private CustomLoadingListItemCreator loadingItem;
     private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        query=preferences.getString(QUERY,"popular");
-        realm = Realm.getDefaultInstance();
+        query = preferences.getString(QUERY,"popular");
+        //realm = Realm.getDefaultInstance();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_movies);
@@ -80,42 +78,32 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         movieGridView.setAdapter(movieListAdapter);
 
         //Setup swipe to refresh
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Loads the initial contents
-                refreshLayout.setRefreshing(true);
-                movieListAdapter.clear();
-                movieListAdapter.add(getMovies(1));
-                movieListAdapter.notifyDataSetChanged();
-                refreshLayout.setRefreshing(false);
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            //Loads the initial contents
+            refreshLayout.setRefreshing(true);
+            movieListAdapter.clear();
+            movieListAdapter.add(getMovies(1));
+            movieListAdapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
         });
         refreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
 
         //Setup pagination
-        loadingItem = new CustomLoadingListItemCreator();
         Paginate.with(movieGridView, this)
                 .addLoadingListItem(true)
-                .setLoadingListItemSpanSizeLookup(new LoadingListItemSpanLookup() {
-                    @Override
-                    public int getSpanSize() {
-                        return NUM_COLS;
-                    }
-                })
-                .setLoadingListItemCreator(loadingItem)
+                .setLoadingListItemSpanSizeLookup(() -> NUM_COLS)
                 .build();
 
         //Setup default second pane
-        if (mtwoPane) {
-            MovieDetailFragment detailFragment = new MovieDetailFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("data", movieList.get(0));
-            detailFragment.setArguments(bundle);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, detailFragment)
-                    .commit();
-        }
+//        if (mtwoPane) {
+//            MovieDetailFragment detailFragment = new MovieDetailFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putParcelable("data", movieList.get(0));
+//            detailFragment.setArguments(bundle);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.container, detailFragment)
+//                    .commit();
+//        }
 
     }
 
@@ -142,13 +130,14 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @Override
     public void onBackPressed() {
-        CustomYoutubeFragment youTubePlayerFragment = (CustomYoutubeFragment) getFragmentManager().findFragmentByTag(VideoAdapter.PLAYER);
-        if (youTubePlayerFragment != null) {
-            if (youTubePlayerFragment.isFullScreen()) {
-                youTubePlayerFragment.setFullScreen(false);
-                return;
-            }
-        }
+//        CustomYoutubeFragment youTubePlayerFragment = (CustomYoutubeFragment)
+//                getFragmentManager().findFragmentByTag(VideoAdapter.PLAYER);
+//        if (youTubePlayerFragment != null) {
+//            if (youTubePlayerFragment.isFullScreen()) {
+//                youTubePlayerFragment.setFullScreen(false);
+//                return;
+//            }
+//        }
         super.onBackPressed();
     }
 
@@ -201,9 +190,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     @Override
     public synchronized void onLoadMore() {
         loading = true;
-        loadingItem.setVisibility(true);
+        //loadingItem.setVisibility(true);
         movieListAdapter.add(getMovies(currentPgNo + 1));
-        loadingItem.setVisibility(false);
+        //loadingItem.setVisibility(false);
         loading = false;
     }
 
@@ -236,7 +225,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             e.printStackTrace();
         }
         if (tempMovieList == null)
-            Toast.makeText(this, "Please check your network connection or view Favourites!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    "Please check your network connection or view Favourites!!!",
+                    Toast.LENGTH_SHORT).show();
         else
             movieList.addAll(tempMovieList);
         return tempMovieList;

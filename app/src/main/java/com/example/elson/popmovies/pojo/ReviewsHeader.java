@@ -10,8 +10,8 @@ import java.util.List;
 public class ReviewsHeader {
     @SerializedName("page")
     int page;
-    @SerializedName("results")
-    List<Reviews> result;
+//    @SerializedName("results")
+//    List<Reviews> result;
     @SerializedName("total_pages")
     int total;
 
@@ -19,9 +19,9 @@ public class ReviewsHeader {
         return page;
     }
 
-    public List<Reviews> getResult() {
-        return result;
-    }
+//    public List<Reviews> getResult() {
+//        return result;
+//    }
 
     public int getTotal() {
         return total;
