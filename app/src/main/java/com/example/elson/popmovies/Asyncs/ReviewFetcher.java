@@ -4,9 +4,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import com.example.elson.popmovies.BuildConfig;
 import com.example.elson.popmovies.FetchData;
-import com.example.elson.popmovies.pojo.ReviewsHeader;
+import com.example.elson.popmovies.model.ReviewsHeader;
 
 import java.io.IOException;
 

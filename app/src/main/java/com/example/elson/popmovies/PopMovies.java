@@ -18,8 +18,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.elson.popmovies.Adapters.GridAdapter;
 import com.example.elson.popmovies.Asyncs.MovieFetcher;
-import com.example.elson.popmovies.pojo.MovieFullData;
-import com.example.elson.popmovies.pojo.MovieHeader;
+import com.example.elson.popmovies.model.MovieFullData;
+import com.example.elson.popmovies.model.MovieHeader;
 import com.facebook.stetho.Stetho;
 import com.paginate.Paginate;
 

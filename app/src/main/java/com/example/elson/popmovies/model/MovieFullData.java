@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.pojo;
+package com.example.elson.popmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,26 +10,13 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import kotlinx.android.parcel.Parcelize;
 
 /**
  * Created by Elson on 10-10-2016.
  */
 public class MovieFullData extends RealmObject implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<MovieFullData> CREATOR = new Parcelable.Creator<MovieFullData>() {
-        @NonNull
-        @Override
-        public MovieFullData createFromParcel(@NonNull Parcel in) {
-            return new MovieFullData(in);
-        }
-
-        @NonNull
-        @Override
-        public MovieFullData[] newArray(int size) {
-            return new MovieFullData[size];
-        }
-    };
     @PrimaryKey
     @SerializedName("id")
     int id;
@@ -67,6 +54,18 @@ public class MovieFullData extends RealmObject implements Parcelable {
 
     public MovieFullData() {
     }
+
+    public static final Creator<MovieFullData> CREATOR = new Creator<MovieFullData>() {
+        @Override
+        public MovieFullData createFromParcel(Parcel in) {
+            return new MovieFullData(in);
+        }
+
+        @Override
+        public MovieFullData[] newArray(int size) {
+            return new MovieFullData[size];
+        }
+    };
 
     public String getTitle() {
         return title;

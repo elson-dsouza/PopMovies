@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.pojo;
+package com.example.elson.popmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,20 +10,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class MovieData implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
-        @NonNull
-        @Override
-        public MovieData createFromParcel(@NonNull Parcel in) {
-            return new MovieData(in);
-        }
-
-        @NonNull
-        @Override
-        public MovieData[] newArray(int size) {
-            return new MovieData[size];
-        }
-    };
     @Nullable
     @SerializedName("id")
     Integer id;
@@ -47,6 +33,20 @@ public class MovieData implements Parcelable {
         this.title = data.getTitle();
         this.rating = data.getRawRating();
     }
+
+    public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
+        @NonNull
+        @Override
+        public MovieData createFromParcel(@NonNull Parcel in) {
+            return new MovieData(in);
+        }
+
+        @NonNull
+        @Override
+        public MovieData[] newArray(int size) {
+            return new MovieData[size];
+        }
+    };
 
     public String getPoster() {
         return poster;

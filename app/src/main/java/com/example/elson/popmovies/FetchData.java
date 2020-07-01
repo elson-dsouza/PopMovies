@@ -2,9 +2,9 @@ package com.example.elson.popmovies;
 
 import androidx.annotation.NonNull;
 
-import com.example.elson.popmovies.pojo.MovieFullData;
-import com.example.elson.popmovies.pojo.MovieHeader;
-import com.example.elson.popmovies.pojo.ReviewsHeader;
+import com.example.elson.popmovies.model.MovieFullData;
+import com.example.elson.popmovies.model.MovieHeader;
+import com.example.elson.popmovies.model.ReviewsHeader;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
