@@ -13,3 +13,6 @@ The libraries used:
 5. Retrofit v2
 6. Stetho
 7. ButterKnife
+
+# Build status: 
+![Android CI](https://github.com/elson1996/PopMovies/workflows/Android%20CI/badge.svg?branch=master)
