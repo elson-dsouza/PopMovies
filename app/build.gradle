@@ -24,6 +24,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'TMDB_V3_API_TOKEN', "System.getenv(\"TMDB_V3_API_TOKEN\")"
+        it.buildConfigField 'String', 'TMDB_V4_API_TOKEN', "System.getenv(\"TMDB_V4_API_TOKEN\")"
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
