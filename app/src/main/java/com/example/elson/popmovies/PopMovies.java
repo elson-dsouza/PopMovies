@@ -18,9 +18,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.elson.popmovies.Adapters.GridAdapter;
 import com.example.elson.popmovies.Asyncs.MovieFetcher;
-import com.example.elson.popmovies.model.MovieFullData;
-import com.example.elson.popmovies.model.MovieHeader;
-import com.facebook.stetho.Stetho;
+import com.example.elson.popmovies.data.model.MovieFullData;
+import com.example.elson.popmovies.data.model.MovieHeader;
 import com.paginate.Paginate;
 
 import java.util.ArrayList;
@@ -70,7 +69,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
         //Initialize butterknife, stetho and 2 pane UI
         ButterKnife.bind(this);
-        Stetho.initializeWithDefaults(this);
         mtwoPane = container != null;
 
         //Initializing the Grid Recycler View
@@ -156,7 +154,7 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
-        query=savedInstanceState.getString(QUERY);
+        query = savedInstanceState.getString(QUERY);
         movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), realm);
         movieGridView.setAdapter(movieListAdapter);
     }
@@ -169,7 +167,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         int id = item.getItemId();
         item.setChecked(true);
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_rating) {
             query="top_rated";
         }

@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.model;
+package com.example.elson.popmovies.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +12,6 @@ public class MovieHeader {
     @SerializedName("page") int page;
     @SerializedName("results") List<MovieData> result;
     @SerializedName("total_pages") int total;
-
 
     public List<MovieData> getResult(){
         return result;

@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.model;
+package com.example.elson.popmovies.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import kotlinx.android.parcel.Parcelize;
 
 /**
  * Created by Elson on 10-10-2016.

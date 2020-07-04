@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.model;
+package com.example.elson.popmovies.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.elson.popmovies.FetchData;
+import com.example.elson.popmovies.network.FetchData;
 import com.example.elson.popmovies.R;
-import com.example.elson.popmovies.model.MovieData;
-import com.example.elson.popmovies.model.MovieFullData;
+import com.example.elson.popmovies.data.model.MovieData;
+import com.example.elson.popmovies.data.model.MovieFullData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
         movieViewHolder.movieRating.setText(String.format("\t%s\t", movie.getRating()));
         Glide.with(context)
                 .load("http://image.tmdb.org/t/p/w185/" + movie.getPoster())
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(movieViewHolder.moviePoster);
         movieViewHolder.favoriteButton.setChecked(realm.where(MovieFullData.class)
                 .equalTo("id", movie.getId()).findFirst() != null);

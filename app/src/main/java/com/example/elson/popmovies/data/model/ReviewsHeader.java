@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.model;
+package com.example.elson.popmovies.data.model;
 
 import com.google.gson.annotations.SerializedName;
 

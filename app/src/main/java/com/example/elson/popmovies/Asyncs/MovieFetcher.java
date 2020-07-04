@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import com.example.elson.popmovies.FetchData;
-import com.example.elson.popmovies.model.MovieHeader;
+import com.example.elson.popmovies.BuildConfig;
+import com.example.elson.popmovies.network.FetchData;
+import com.example.elson.popmovies.data.model.MovieHeader;
 
 import java.io.IOException;
 
@@ -27,7 +28,7 @@ public class MovieFetcher extends AsyncTask<String, Void, MovieHeader> {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         FetchData fetch = retrofit.create(FetchData.class);
-        Call<MovieHeader> call = fetch.getMovies(params[0], "BuildConfig.API_KEY", params[1]);
+        Call<MovieHeader> call = fetch.getMovies(params[0], BuildConfig.TMDB_V3_API_TOKEN, params[1]);
         MovieHeader movies = null;
         try {
             movies = call.execute().body();
