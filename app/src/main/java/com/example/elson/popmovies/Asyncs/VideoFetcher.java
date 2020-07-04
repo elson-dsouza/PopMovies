@@ -7,12 +7,7 @@ package com.example.elson.popmovies.Asyncs;
 //
 //    @Override
 //    protected VideoResponse doInBackground(String... params) {
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("https://api.themoviedb.org")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//        FetchData fetch = retrofit.create(FetchData.class);
+//        FetchData fetch = generateRetrofitForTmdb().create(FetchData.class);
 //        Call<VideoResponse> call = fetch.getVideos(params[0], BuildConfig.API_KEY);
 //        VideoResponse videos = null;
 //        try {

@@ -9,7 +9,10 @@ class MoviesApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Realm.init(this)
-        Stetho.initializeWithDefaults(this)
+
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+        }
     }
 
 }

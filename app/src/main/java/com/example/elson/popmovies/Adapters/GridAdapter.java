@@ -153,10 +153,10 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
-            movieName = (TextView) itemView.findViewById(R.id.movieName);
-            moviePoster = (ImageView) itemView.findViewById(R.id.moviePoster);
+            movieName = itemView.findViewById(R.id.movieName);
+            moviePoster = itemView.findViewById(R.id.moviePoster);
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
-            movieRating = (TextView) itemView.findViewById(R.id.movieRating);
+            movieRating = itemView.findViewById(R.id.movieRating);
         }
     }
 

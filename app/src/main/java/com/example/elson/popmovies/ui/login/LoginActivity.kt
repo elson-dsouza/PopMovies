@@ -1,6 +1,7 @@
 package com.example.elson.popmovies.ui.login
 
 import android.os.Bundle
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import com.example.elson.popmovies.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.container
 import kotlinx.android.synthetic.main.activity_login.oAuthWebView
+import kotlinx.android.synthetic.main.activity_login.progressBar
 
 class LoginActivity : AppCompatActivity() {
 
@@ -32,8 +34,14 @@ class LoginActivity : AppCompatActivity() {
         })
 
         loginViewModel.loginUrl.observe(this@LoginActivity, Observer {
-            val url = it ?: return@Observer
-            oAuthWebView.loadUrl(url)
+            if (it == null) {
+                oAuthWebView.visibility = View.GONE
+                progressBar.visibility = View.VISIBLE
+            } else {
+                oAuthWebView.loadUrl(it)
+                oAuthWebView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
         })
 
         oAuthWebView.webViewClient = object: WebViewClient() {

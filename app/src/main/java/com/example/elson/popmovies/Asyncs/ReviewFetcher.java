@@ -14,6 +14,8 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.elson.popmovies.network.RetrofitGeneratorKt.generateRetrofitForTmdb;
+
 /**
  * Created by Elson on 19-10-2016.
  */
@@ -21,12 +23,7 @@ public class ReviewFetcher extends AsyncTask<String, Void, ReviewsHeader> {
     @Nullable
     @Override
     protected ReviewsHeader doInBackground(String... params) {
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        FetchData fetch = retrofit.create(FetchData.class);
+        FetchData fetch = generateRetrofitForTmdb().create(FetchData.class);
         Call<ReviewsHeader> call = fetch.getReviews(params[0], BuildConfig.TMDB_V3_API_TOKEN, params[1]);
         ReviewsHeader reviews = null;
         try {

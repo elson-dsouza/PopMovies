@@ -3,15 +3,12 @@ package com.example.elson.popmovies.data
 import com.example.elson.popmovies.data.model.LoggedInUser
 import com.example.elson.popmovies.data.model.RequestToken
 import com.example.elson.popmovies.network.Authentication
-import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.example.elson.popmovies.network.generateRetrofitForTmdb
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
@@ -51,22 +48,20 @@ object AuthenticationRepository {
             val body = JsonObject().apply {
                 addProperty("redirect_to", responseUrl)
             }
-            val okHttpClient = OkHttpClient.Builder()
-                    .addNetworkInterceptor(StethoInterceptor())
-                    .build()
-            val response = Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/")
-                    .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(Authentication::class.java)
-                    .requestToken(body = body)
-                    .execute()
-            if (response.isSuccessful) {
-                response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
-            } else {
-                Result.Error(IOException(response.errorBody()?.string()))
+            try {
+                val response = generateRetrofitForTmdb()
+                        .create(Authentication::class.java)
+                        .requestToken(body = body)
+                        .execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
+                } else {
+                    Result.Error(IOException(response.errorBody()?.string()))
+                }
+            } catch (e: IOException) {
+                Result.Error(e)
             }
+
         }
     }
 
@@ -77,17 +72,18 @@ object AuthenticationRepository {
             val body = JsonObject().apply {
                 addProperty("request_token", requestToken)
             }
-            val response = Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(Authentication::class.java)
-                    .accessToken(body = body)
-                    .execute()
-            if (response.isSuccessful) {
-                response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
-            } else {
-                Result.Error(IOException(response.errorBody()?.string()))
+            try {
+                val response = generateRetrofitForTmdb()
+                        .create(Authentication::class.java)
+                        .accessToken(body = body)
+                        .execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
+                } else {
+                    Result.Error(IOException(response.errorBody()?.string()))
+                }
+            } catch (e: IOException) {
+                Result.Error(e)
             }
         }
     }
