@@ -8,8 +8,7 @@ object AppInjector {
     lateinit var appComponent: AppComponent
         private set
 
-    lateinit var authenticationSubComponent: AuthenticationSubComponent
-        private set
+    private lateinit var authenticationSubComponent: AuthenticationSubComponent
 
     @Synchronized
     fun buildAppComponent(application: MoviesApplication): AppComponent {
@@ -20,8 +19,10 @@ object AppInjector {
     }
 
     @Synchronized
-    fun buildLoginSubComponent(): AuthenticationSubComponent {
-        authenticationSubComponent = appComponent.authenticationSubcomponentBuilder.build()
+    fun getAuthenticationSubComponent(): AuthenticationSubComponent {
+        if (!::authenticationSubComponent.isInitialized) {
+            authenticationSubComponent = appComponent.authenticationSubcomponentBuilder.build()
+        }
         return authenticationSubComponent
     }
 }

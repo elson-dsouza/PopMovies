@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.elson.popmovies.BuildConfig;
 import com.example.elson.popmovies.network.FetchData;
 import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.data.model.MovieData;
@@ -104,7 +105,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
                         .build();
                 FetchData fetch = retrofit.create(FetchData.class);
                 Call<MovieFullData> call = fetch.getData(Integer.toString(movie.getId()),
-                        "BuildConfig.API_KEY");
+                        BuildConfig.TMDB_V3_API_TOKEN);
                 call.enqueue(new Callback<MovieFullData>() {
                     @Override
                     public void onResponse(Call<MovieFullData> call, @NonNull Response<MovieFullData> response) {
@@ -129,7 +130,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
 
     @Override
     public int getItemCount() {
-        return (movieList != null) ? movieList.size() : 0;
+        return movieList.size();
     }
 
     public void add(@Nullable List<Parcelable> data) {

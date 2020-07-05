@@ -1,6 +1,7 @@
 package com.example.elson.popmovies.dagger.authentication
 
 import com.example.elson.popmovies.ui.login.LoginViewModel
+import com.example.elson.popmovies.ui.splash.SplashActivity
 import dagger.Subcomponent
 
 @AuthenticationScope
@@ -10,6 +11,7 @@ import dagger.Subcomponent
 interface AuthenticationSubComponent {
 
     fun inject(viewModel: LoginViewModel)
+    fun inject(splashActivity: SplashActivity)
 
     @Subcomponent.Builder
     interface Builder {

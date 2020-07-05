@@ -30,7 +30,7 @@ class LoginViewModel : ViewModel() {
     val loginResult: LiveData<LoginResult> = _loginResult
 
     init {
-        AppInjector.buildLoginSubComponent().inject(this)
+        AppInjector.getAuthenticationSubComponent().inject(this)
     }
 
     fun startRequestTokenGeneration() {
