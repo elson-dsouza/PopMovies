@@ -1,23 +1,23 @@
 package com.example.elson.popmovies
 
 import com.example.elson.popmovies.dagger.app.AppInjector
+import com.example.elson.popmovies.dagger.app.DaggerDebugAppComponent
 import com.facebook.stetho.Stetho
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
-import io.realm.Realm
 
-class MoviesApplication : DaggerApplication() {
-
-    private val applicationInjector = AppInjector.buildAppComponent(this)
+class DebugApplication: MoviesApplication() {
 
     override fun onCreate() {
         super.onCreate()
         Stetho.initializeWithDefaults(this)
-        Realm.init(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return applicationInjector
+        val appComponent = DaggerDebugAppComponent.builder()
+                .application(this)
+                .build()
+        AppInjector.appComponent = appComponent
+        return appComponent
     }
-
 }
