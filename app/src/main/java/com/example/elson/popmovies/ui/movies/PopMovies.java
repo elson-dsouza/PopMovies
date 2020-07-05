@@ -1,4 +1,4 @@
-package com.example.elson.popmovies;
+package com.example.elson.popmovies.ui.movies;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,8 +16,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.elson.popmovies.Adapters.GridAdapter;
-import com.example.elson.popmovies.Asyncs.MovieFetcher;
+import com.example.elson.popmovies.adapter.GridAdapter;
+import com.example.elson.popmovies.async.MovieFetcher;
+import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.data.model.MovieFullData;
 import com.example.elson.popmovies.data.model.MovieHeader;
 import com.paginate.Paginate;

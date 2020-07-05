@@ -3,20 +3,21 @@ package com.example.elson.popmovies.data
 import com.example.elson.popmovies.data.model.LoggedInUser
 import com.example.elson.popmovies.data.model.RequestToken
 import com.example.elson.popmovies.network.Authentication
-import com.example.elson.popmovies.network.generateRetrofitForTmdb
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import retrofit2.Retrofit
 import java.io.IOException
+import javax.inject.Inject
 
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-object AuthenticationRepository {
+class AuthenticationRepository @Inject constructor(private val authentication: Authentication) {
 
     // in-memory cache of the loggedInUser object
     var user: LoggedInUser? = null
@@ -49,9 +50,7 @@ object AuthenticationRepository {
                 addProperty("redirect_to", responseUrl)
             }
             try {
-                val response = generateRetrofitForTmdb()
-                        .create(Authentication::class.java)
-                        .requestToken(body = body)
+                val response = authentication.requestToken(body = body)
                         .execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
@@ -73,8 +72,7 @@ object AuthenticationRepository {
                 addProperty("request_token", requestToken)
             }
             try {
-                val response = generateRetrofitForTmdb()
-                        .create(Authentication::class.java)
+                val response = authentication
                         .accessToken(body = body)
                         .execute()
                 if (response.isSuccessful) {

@@ -6,17 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.R
+import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.AuthenticationRepository
 import com.example.elson.popmovies.data.Result
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
 class LoginViewModel : ViewModel() {
 
-    private val authenticationRepository = AuthenticationRepository
+    @Inject lateinit var authenticationRepository: AuthenticationRepository
     private lateinit var generateRequestTokenJob: Job
     private val responseDomain = "https://popmovies.elson.com/"
 
@@ -27,6 +28,10 @@ class LoginViewModel : ViewModel() {
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
+
+    init {
+        AppInjector.buildLoginSubComponent().inject(this)
+    }
 
     fun startRequestTokenGeneration() {
         generateRequestTokenJob = viewModelScope.launch {

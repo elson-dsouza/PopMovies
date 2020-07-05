@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.Adapters;
+package com.example.elson.popmovies.adapter;
 
 import android.app.FragmentManager;
 import android.content.Context;
