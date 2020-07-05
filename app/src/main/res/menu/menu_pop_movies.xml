@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.elson.popmovies.PopMovies">
+    tools:context="com.example.elson.popmovies.ui.movies.PopMovies">
 
     <group android:checkableBehavior="single">
 
