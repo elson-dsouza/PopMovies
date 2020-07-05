@@ -17,29 +17,40 @@ import javax.inject.Inject
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-class AuthenticationRepository @Inject constructor(private val authentication: Authentication) {
+class AuthenticationRepository @Inject constructor(
+        private val authentication: Authentication,
+        private val securePrefs: SecurePrefs
+) {
 
-    // in-memory cache of the loggedInUser object
     var user: LoggedInUser? = null
         private set
 
-    val isLoggedIn: Boolean
-        get() = user != null
+    private val userLock = Object()
 
     init {
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-        user = null
+        synchronized(userLock) {
+            user = securePrefs.getUserCredentials()
+        }
     }
 
     fun logout() {
-        user = null
+        synchronized(userLock) {
+            user = null
+            securePrefs.resetUserCredentials()
+        }
     }
 
     fun setLoggedInUser(loggedInUser: LoggedInUser) {
-        this.user = loggedInUser
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
+        synchronized(userLock) {
+            this.user = loggedInUser
+            securePrefs.saveUserCredentials(loggedInUser)
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        synchronized(userLock) {
+            return user != null
+        }
     }
 
     suspend fun generateRequestTokenAsync(

@@ -1,6 +1,7 @@
 package com.example.elson.popmovies.dagger.authentication
 
 import com.example.elson.popmovies.data.AuthenticationRepository
+import com.example.elson.popmovies.data.SecurePrefs
 import com.example.elson.popmovies.network.Authentication
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,10 @@ class AuthenticationModule {
 
     @AuthenticationScope
     @Provides
-    fun provideAuthenticationRepository(authentication: Authentication): AuthenticationRepository {
-        return AuthenticationRepository(authentication)
+    fun provideAuthenticationRepository(
+            authentication: Authentication,
+            securePrefs: SecurePrefs
+    ): AuthenticationRepository {
+        return AuthenticationRepository(authentication, securePrefs)
     }
 }
