@@ -2,7 +2,6 @@ package com.example.elson.popmovies.dagger.app
 
 import com.example.elson.popmovies.MoviesApplication
 import com.example.elson.popmovies.dagger.authentication.AuthenticationSubComponent
-import com.example.elson.popmovies.ui.splash.SplashActivity
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -13,7 +12,8 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidInjectionModule::class,
     BindingModule::class,
-    AppModule::class
+    PrefsModule::class,
+    NetworkModule::class
 ])
 interface AppComponent: AndroidInjector<MoviesApplication> {
 
