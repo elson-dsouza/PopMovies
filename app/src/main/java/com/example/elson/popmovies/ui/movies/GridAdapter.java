@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.adapter;
+package com.example.elson.popmovies.ui.movies;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -24,6 +24,8 @@ import com.example.elson.popmovies.data.model.MovieFullData;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Call;
@@ -40,7 +42,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
     private Context context;
     private final boolean isTwoPane;
     private final FragmentManager fm;
-    private MovieData movie;
 
     public GridAdapter(List<Parcelable> movieList, boolean isTwoPane, FragmentManager fm, Realm realm) {
         this.movieList = new ArrayList<>();
@@ -61,17 +62,19 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull final MovieViewHolder movieViewHolder, int position) {
-
-        if (movieList.get(position) instanceof MovieData)
+        MovieData movie;
+        if (movieList.get(position) instanceof MovieData) {
             movie = (MovieData) movieList.get(position);
-        else
+        }
+        else {
             movie = new MovieData((MovieFullData) movieList.get(position));
+        }
 
         movieViewHolder.movieName.setText(movie.getTitle());
         movieViewHolder.movieRating.setText(String.format("\t%s\t", movie.getRating()));
         Glide.with(context)
-                .load("http://image.tmdb.org/t/p/w185/" + movie.getPoster())
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .load("https://image.tmdb.org/t/p/w185/" + movie.getPoster())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(movieViewHolder.moviePoster);
         movieViewHolder.favoriteButton.setChecked(realm.where(MovieFullData.class)
                 .equalTo("id", movie.getId()).findFirst() != null);
@@ -95,7 +98,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
         });
 
         movieViewHolder.favoriteButton.setOnClickListener(v -> {
-            movieViewHolder.favoriteButton.toggle();
             RealmResults<MovieFullData> temp = realm.where(MovieFullData.class)
                     .equalTo("id", movie.getId()).findAll();
             if (temp.size() == 0) {
@@ -145,12 +147,16 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.MovieViewHolde
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
 
         @NonNull
-        private final TextView movieName;
+        TextView movieName;
+
         @NonNull
-        private final TextView movieRating;
+        TextView movieRating;
+
         @NonNull
-        private final ImageView moviePoster;
-        private final CheckBox favoriteButton;
+        ImageView moviePoster;
+
+        @NonNull
+        CheckBox favoriteButton;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);

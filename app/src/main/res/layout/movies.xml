@@ -2,69 +2,73 @@
 
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
-    card_view:cardElevation="5dp"
+    app:cardElevation="5dp"
     android:theme="@style/Base.CardView"
-    card_view:cardPreventCornerOverlap="false"
-    card_view:cardUseCompatPadding="true"
-    card_view:cardCornerRadius="@dimen/card_radius">
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/card_radius">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
 
-        <ImageView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
-            android:id="@+id/moviePoster"/>
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/movieName"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:elegantTextHeight="true"
-            android:fontFamily="roboto"
-            android:textSize="20sp"
-            android:textAppearance="?android:textAppearanceMedium"/>
-
-        <RelativeLayout
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="5dp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/moviePoster"
+            app:layout_constraintBottom_toTopOf="@id/favoriteButton"
+            tools:text="Movie Name" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/btn_star_big_on"
-                android:id="@+id/imageView" />
+        <ImageView
+            android:id="@+id/ratingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/content_description_ratings"
+            android:src="@android:drawable/btn_star_big_on"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/favoriteButton" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:fontFamily="roboto"
-                android:textSize="15sp"
-                android:id="@+id/movieRating"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/imageView" />
+        <TextView
+            android:id="@+id/movieRating"
+            style="@style/TextAppearance.MaterialComponents.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ratingIcon"
+            app:layout_constraintTop_toTopOf="@id/favoriteButton"
+            tools:text="8/10" />
 
-            <CheckBox
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@android:color/white"
-                android:fitsSystemWindows="true"
-                android:id="@+id/favoriteButton"
-                android:src="@android:drawable/btn_star"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp" />
+        <CheckBox
+            android:id="@+id/favoriteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/favourite_selector"
+            android:fitsSystemWindows="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/movieRating"
+            app:layout_constraintHorizontal_bias="1" />
 
-        </RelativeLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

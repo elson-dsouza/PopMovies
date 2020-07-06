@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,11 +15,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.elson.popmovies.adapter.GridAdapter;
-import com.example.elson.popmovies.async.MovieFetcher;
 import com.example.elson.popmovies.R;
+import com.example.elson.popmovies.async.MovieFetcher;
 import com.example.elson.popmovies.data.model.MovieFullData;
 import com.example.elson.popmovies.data.model.MovieHeader;
+import com.google.android.material.snackbar.Snackbar;
 import com.paginate.Paginate;
 
 import java.util.ArrayList;
@@ -35,17 +34,16 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     private static final String MOVIELIST = "MOVIEKEY";
     private static final String QUERY = "QUERYKEY";
     private final int NUM_COLS = 2;
-    //Views injected using ButterKnife
-    @Nullable
+
     @BindView(R.id.movieGrid)
     RecyclerView movieGridView;
-    @Nullable
+
     @BindView(R.id.refresh)
     SwipeRefreshLayout refreshLayout;
-    @Nullable
+
     @BindView(R.id.container)
     FrameLayout container;
-    @Nullable
+
     private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
@@ -59,27 +57,29 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        query = preferences.getString(QUERY,"popular");
-        realm = Realm.getDefaultInstance();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_movies);
-        movieList=new ArrayList<>();
-
-        //Initialize butterknife, stetho and 2 pane UI
+        realm = Realm.getDefaultInstance();
         ButterKnife.bind(this);
         mtwoPane = container != null;
+
+        if (savedInstanceState != null) {
+            movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
+            query = savedInstanceState.getString(QUERY);
+            movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), realm);
+            movieGridView.setAdapter(movieListAdapter);
+        } else {
+            movieList = new ArrayList<>();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            query = preferences.getString(QUERY,"popular");
+            movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), realm);
+        }
 
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
         movieGridView.setLayoutManager(movieLayoutManager);
-        //movieGridView.setItemViewCacheSize(10);
-
-       //Loads the initial contents
-        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), realm);
         movieGridView.setAdapter(movieListAdapter);
+        movieGridView.setItemViewCacheSize(32);
 
         //Setup swipe to refresh
         refreshLayout.setOnRefreshListener(() -> {
@@ -90,7 +90,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             movieListAdapter.notifyDataSetChanged();
             refreshLayout.setRefreshing(false);
         });
-        refreshLayout.setColorSchemeResources(R.color.colorPrimaryDark);
 
         //Setup pagination
         Paginate.with(movieGridView, this)
@@ -152,26 +151,13 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
-        query = savedInstanceState.getString(QUERY);
-        movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), realm);
-        movieGridView.setAdapter(movieListAdapter);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         item.setChecked(true);
 
         if (id == R.id.action_rating) {
             query="top_rated";
-        }
-        else if(id == R.id.action_popular) {
+        } else if(id == R.id.action_popular) {
             query="popular";
 
         } else if (id == R.id.action_favourites) {
@@ -181,21 +167,20 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(QUERY,query);
+        editor.putString(QUERY, query);
         editor.apply();
+
         movieListAdapter.clear();
-        movieListAdapter.notifyDataSetChanged();
         movieListAdapter.add(getMovies(1));
         movieListAdapter.notifyDataSetChanged();
+
         return true;
     }
 
     @Override
     public synchronized void onLoadMore() {
         loading = true;
-        //loadingItem.setVisibility(true);
         movieListAdapter.add(getMovies(currentPgNo + 1));
-        //loadingItem.setVisibility(false);
         loading = false;
     }
 
@@ -208,7 +193,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     public boolean hasLoadedAllItems() {
         return currentPgNo==totalPgNo;
     }
-
 
     @Nullable
     private List<Parcelable> getMovies(int curpg) {
@@ -229,9 +213,8 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             e.printStackTrace();
         }
         if (tempMovieList == null)
-            Toast.makeText(this,
-                    "Please check your network connection or view Favourites!!!",
-                    Toast.LENGTH_SHORT).show();
+            Snackbar.make(container, "Please check your network connection or view Favourites!!!",
+                    Snackbar.LENGTH_LONG).show();
         else
             movieList.addAll(tempMovieList);
         return tempMovieList;

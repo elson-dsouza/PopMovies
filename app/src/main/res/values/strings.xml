@@ -7,4 +7,6 @@
     <string name="reviews">Reviews</string>
     <string name="title_activity_login">Login</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="content_description_ratings">Ratings</string>
 </resources>
