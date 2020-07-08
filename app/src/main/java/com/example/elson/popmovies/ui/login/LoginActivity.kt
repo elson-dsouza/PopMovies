@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.elson.popmovies.R
-import com.example.elson.popmovies.ui.movies.PopMovies
+import com.example.elson.popmovies.ui.movies.MoviesActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.container
 import kotlinx.android.synthetic.main.activity_login.oAuthWebView
@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
             if (loginResult.error != null) {
                 Snackbar.make(container, loginResult.error, Snackbar.LENGTH_LONG).show()
             } else if (loginResult.success == true) {
-                val intent = Intent(this, PopMovies::class.java)
+                val intent = Intent(this, MoviesActivity::class.java)
                 startActivity(intent)
                 finish()
             }

@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.async;
+package com.example.elson.popmovies.network;
 
 /**
  * Created by Elson on 11-10-2016.

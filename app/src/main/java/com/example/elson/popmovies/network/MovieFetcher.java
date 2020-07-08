@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.async;
+package com.example.elson.popmovies.network;
 
 import android.os.AsyncTask;
 

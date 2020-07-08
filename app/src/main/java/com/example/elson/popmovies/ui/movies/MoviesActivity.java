@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -16,10 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.elson.popmovies.R;
-import com.example.elson.popmovies.async.MovieFetcher;
+import com.example.elson.popmovies.network.MovieFetcher;
 import com.example.elson.popmovies.data.model.MovieFullData;
 import com.example.elson.popmovies.data.model.MovieHeader;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.paginate.Paginate;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
+public class MoviesActivity extends AppCompatActivity implements Paginate.Callbacks {
 
     private static final String MOVIELIST = "MOVIEKEY";
     private static final String QUERY = "QUERYKEY";
@@ -43,6 +42,9 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
 
     @BindView(R.id.container)
     FrameLayout container;
+
+    @BindView(R.id.tabBar)
+    TabLayout tabBar;
 
     private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
@@ -74,6 +76,24 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
             query = preferences.getString(QUERY,"popular");
             movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), realm);
         }
+
+        tabBar.selectTab(tabBar.getTabAt(getSelectedTabIndex()));
+        tabBar.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                handleSelectedTab(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         //Initializing the Grid Recycler View
         movieLayoutManager= new GridLayoutManager(getApplicationContext(),NUM_COLS);
@@ -111,20 +131,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_pop_movies, menu);
-
-        if(query.contains("popular"))
-            menu.findItem(R.id.action_popular).setChecked(true);
-        else if(query.contains("top_rated"))
-            menu.findItem(R.id.action_rating).setChecked(true);
-        else if (query.contains("favourites"))
-            menu.findItem(R.id.action_favourites).setChecked(true);
-        return true;
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(MOVIELIST, movieList);
@@ -148,33 +154,6 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
     protected void onDestroy() {
         super.onDestroy();
         realm.close();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        item.setChecked(true);
-
-        if (id == R.id.action_rating) {
-            query="top_rated";
-        } else if(id == R.id.action_popular) {
-            query="popular";
-
-        } else if (id == R.id.action_favourites) {
-            query = "favourites";
-        }
-        super.onOptionsItemSelected(item);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(QUERY, query);
-        editor.apply();
-
-        movieListAdapter.clear();
-        movieListAdapter.add(getMovies(1));
-        movieListAdapter.notifyDataSetChanged();
-
-        return true;
     }
 
     @Override
@@ -218,5 +197,34 @@ public class PopMovies extends AppCompatActivity implements Paginate.Callbacks {
         else
             movieList.addAll(tempMovieList);
         return tempMovieList;
+    }
+
+    private int getSelectedTabIndex() {
+        if (query.equalsIgnoreCase("popular")) {
+            return 0;
+        } else if (query.equalsIgnoreCase("top_rated")) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+    private void handleSelectedTab(int position) {
+        if (position == 0) {
+            query = "popular";
+        } else if (position == 1) {
+            query = "top_rated";
+        } else if (position == 2) {
+            query = "favourites";
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(QUERY, query);
+        editor.apply();
+
+        movieListAdapter.clear();
+        movieListAdapter.add(getMovies(1));
+        movieListAdapter.notifyDataSetChanged();
     }
 }

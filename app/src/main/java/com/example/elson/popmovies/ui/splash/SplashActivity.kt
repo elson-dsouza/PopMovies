@@ -7,8 +7,7 @@ import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.AuthenticationRepository
 import com.example.elson.popmovies.ui.login.LoginActivity
-import com.example.elson.popmovies.ui.movies.PopMovies
-import dagger.android.AndroidInjection
+import com.example.elson.popmovies.ui.movies.MoviesActivity
 import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
@@ -24,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
         val intent = if (!authenticationRepository.isUserLoggedIn()) {
             Intent(this, LoginActivity::class.java)
         } else {
-            Intent(this, PopMovies::class.java)
+            Intent(this, MoviesActivity::class.java)
         }
         startActivity(intent)
         finish()
