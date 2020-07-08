@@ -18,7 +18,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         AppInjector.getAuthenticationSubComponent().inject(this)
-        setContentView(R.layout.activity_splash)
 
         val intent = if (!authenticationRepository.isUserLoggedIn()) {
             Intent(this, LoginActivity::class.java)
