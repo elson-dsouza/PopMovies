@@ -5,6 +5,8 @@
     <string name="login_failed">"Login failed"</string>
 
     <string name="content_description_ratings">Ratings</string>
+    <string name="content_description_open_navbar">Open Navigation Bar</string>
+    <string name="content_description_close_navbar">Open Navigation Bar</string>
 
     <string name="tab_popular">Popular</string>
     <string name="top_top_rated">Top Rated</string>

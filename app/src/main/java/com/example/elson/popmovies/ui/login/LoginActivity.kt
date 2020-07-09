@@ -5,24 +5,33 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.ui.movies.MoviesActivity
+import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.container
+import kotlinx.android.synthetic.main.activity_login.navDrawer
+import kotlinx.android.synthetic.main.activity_login.navView
 import kotlinx.android.synthetic.main.activity_login.oAuthWebView
 import kotlinx.android.synthetic.main.activity_login.progressBar
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseNavBarActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override val drawerLayout: DrawerLayout
+        get() = navDrawer
 
+    override val navigationView: NavigationView
+        get() = navView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_login)
+        super.onCreate(savedInstanceState)
 
         loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 

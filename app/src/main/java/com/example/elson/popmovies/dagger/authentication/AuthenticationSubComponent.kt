@@ -11,7 +11,6 @@ import dagger.Subcomponent
 interface AuthenticationSubComponent {
 
     fun inject(viewModel: LoginViewModel)
-    fun inject(splashActivity: SplashActivity)
 
     @Subcomponent.Builder
     interface Builder {

@@ -12,18 +12,9 @@ import javax.inject.Inject
 
 class SplashActivity : AppCompatActivity() {
 
-    @Inject lateinit var authenticationRepository: AuthenticationRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        AppInjector.getAuthenticationSubComponent().inject(this)
-
-        val intent = if (!authenticationRepository.isUserLoggedIn()) {
-            Intent(this, LoginActivity::class.java)
-        } else {
-            Intent(this, MoviesActivity::class.java)
-        }
+        val intent = Intent(this, MoviesActivity::class.java)
         startActivity(intent)
         finish()
     }

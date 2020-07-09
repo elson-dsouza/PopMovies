@@ -8,18 +8,22 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.elson.popmovies.R;
-import com.example.elson.popmovies.network.MovieFetcher;
 import com.example.elson.popmovies.data.model.MovieFullData;
 import com.example.elson.popmovies.data.model.MovieHeader;
+import com.example.elson.popmovies.network.MovieFetcher;
+import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.paginate.Paginate;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-public class MoviesActivity extends AppCompatActivity implements Paginate.Callbacks {
+public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callbacks {
 
     private static final String MOVIELIST = "MOVIEKEY";
     private static final String QUERY = "QUERYKEY";
@@ -46,6 +50,12 @@ public class MoviesActivity extends AppCompatActivity implements Paginate.Callba
     @BindView(R.id.tabBar)
     TabLayout tabBar;
 
+    @BindView(R.id.navDrawer)
+    DrawerLayout navDrawer;
+
+    @BindView(R.id.navView)
+    NavigationView navView;
+
     private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
@@ -59,10 +69,11 @@ public class MoviesActivity extends AppCompatActivity implements Paginate.Callba
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pop_movies);
-        realm = Realm.getDefaultInstance();
         ButterKnife.bind(this);
+        super.onCreate(savedInstanceState);
+
+        realm = Realm.getDefaultInstance();
         mtwoPane = container != null;
 
         if (savedInstanceState != null) {
@@ -226,5 +237,17 @@ public class MoviesActivity extends AppCompatActivity implements Paginate.Callba
         movieListAdapter.clear();
         movieListAdapter.add(getMovies(1));
         movieListAdapter.notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public DrawerLayout getDrawerLayout() {
+        return navDrawer;
+    }
+
+    @NonNull
+    @Override
+    public NavigationView getNavigationView() {
+        return navView;
     }
 }
