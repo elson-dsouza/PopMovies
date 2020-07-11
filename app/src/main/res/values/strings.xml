@@ -2,7 +2,9 @@
     <string name="app_name">Pop Movies</string>
     <string name="title_activity_movies">Movies</string>
     <string name="title_activity_login">Login</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="login_failed">Login failed</string>
+    <string name="logout_success">Logout success</string>
+    <string name="logout_failed">Logout failed</string>
 
     <string name="content_description_ratings">Ratings</string>
     <string name="content_description_open_navbar">Open Navigation Bar</string>

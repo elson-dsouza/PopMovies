@@ -29,6 +29,9 @@ class LoginActivity : BaseNavBarActivity() {
     override val navigationView: NavigationView
         get() = navView
 
+    override val rootLayout: View
+        get() = container
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_login)
         super.onCreate(savedInstanceState)
@@ -41,6 +44,7 @@ class LoginActivity : BaseNavBarActivity() {
                 Snackbar.make(container, loginResult.error, Snackbar.LENGTH_LONG).show()
             } else if (loginResult.success == true) {
                 val intent = Intent(this, MoviesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 startActivity(intent)
                 finish()
             }

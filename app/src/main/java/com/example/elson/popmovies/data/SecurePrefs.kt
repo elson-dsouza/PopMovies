@@ -2,11 +2,17 @@ package com.example.elson.popmovies.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.elson.popmovies.data.model.LoggedInUser
+import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import java.security.SecureRandom
 import javax.inject.Inject
+
+private const val KEY_USER_CREDENTIALS = "user_credentials"
+private const val DB_KEY = "db_key"
 
 class SecurePrefs @Inject constructor(context: Context) {
 
@@ -14,7 +20,6 @@ class SecurePrefs @Inject constructor(context: Context) {
     private val sharedPreferences: SharedPreferences
     private val fileName = "SecurePrefsFile"
 
-    private val KEY_USER_CREDENTIALS = "user_credentials"
 
     init {
         val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
@@ -24,6 +29,18 @@ class SecurePrefs @Inject constructor(context: Context) {
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    fun getDBKey(): ByteArray {
+        return if(sharedPreferences.contains(DB_KEY)) {
+            Base64.decode(sharedPreferences.getString(DB_KEY, ""), Base64.DEFAULT)
+        } else {
+            val key = ByteArray(64)
+            SecureRandom().nextBytes(key)
+            sharedPreferences.edit()
+                    .putString(DB_KEY, Base64.encodeToString(key, Base64.DEFAULT)).apply()
+            key
+        }
     }
 
     fun saveUserCredentials(loggedInUser: LoggedInUser) {

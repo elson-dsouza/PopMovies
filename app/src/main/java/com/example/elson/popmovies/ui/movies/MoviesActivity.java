@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -249,5 +250,11 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
     @Override
     public NavigationView getNavigationView() {
         return navView;
+    }
+
+    @NonNull
+    @Override
+    protected View getRootLayout() {
+        return container;
     }
 }

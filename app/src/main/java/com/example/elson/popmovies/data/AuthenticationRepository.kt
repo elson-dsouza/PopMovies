@@ -33,7 +33,7 @@ class AuthenticationRepository @Inject constructor(
         }
     }
 
-    fun logout() {
+    private fun resetCredentials() {
         synchronized(userLock) {
             user = null
             securePrefs.resetUserCredentials()
@@ -86,6 +86,27 @@ class AuthenticationRepository @Inject constructor(
                 val response = authentication
                         .accessToken(body = body)
                         .execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
+                } else {
+                    Result.Error(IOException(response.errorBody()?.string()))
+                }
+            } catch (e: IOException) {
+                Result.Error(e)
+            }
+        }
+    }
+
+    suspend fun logoutAsync(): Deferred<Result<JsonObject>> = coroutineScope {
+        async(Dispatchers.IO) {
+            val body = JsonObject().apply {
+                addProperty("access_token", user?.accessToken)
+            }
+            try {
+                val response = authentication
+                        .logout(body = body)
+                        .execute()
+                resetCredentials()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {
