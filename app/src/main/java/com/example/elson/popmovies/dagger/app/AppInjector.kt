@@ -10,7 +10,7 @@ object AppInjector {
     @Synchronized
     fun getAuthenticationSubComponent(): AuthenticationSubComponent {
         if (!::authenticationSubComponent.isInitialized) {
-            authenticationSubComponent = appComponent.authenticationSubcomponentBuilder.build()
+            authenticationSubComponent = appComponent.authenticationSubComponentFactory.create()
         }
         return authenticationSubComponent
     }

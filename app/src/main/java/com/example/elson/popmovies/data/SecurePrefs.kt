@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 private const val KEY_USER_CREDENTIALS = "user_credentials"
 private const val DB_KEY = "db_key"
+private const val MOVIES_QUERY = "movies_query"
 
 class SecurePrefs @Inject constructor(context: Context) {
 
@@ -55,5 +56,13 @@ class SecurePrefs @Inject constructor(context: Context) {
 
     fun resetUserCredentials() {
         sharedPreferences.edit().remove(KEY_USER_CREDENTIALS).apply()
+    }
+
+    fun getMoviesQuery(): String {
+        return sharedPreferences.getString(MOVIES_QUERY,"popular")!!
+    }
+
+    fun putMoviesQuery(query: String) {
+        return sharedPreferences.edit().putString(MOVIES_QUERY,query).apply()
     }
 }

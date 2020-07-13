@@ -14,4 +14,16 @@
     <style name="SplashTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_drawable</item>
     </style>
+
+    <style name="TabTextSize" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="FavouriteButtonStyle" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="materialThemeOverlay">@style/FavouriteButtonStyle.MaterialThemeOverlay</item>
+    </style>
+
+    <style name="FavouriteButtonStyle.MaterialThemeOverlay" parent="">
+        <item name="colorAccent">?attr/colorError</item>
+    </style>
 </resources>

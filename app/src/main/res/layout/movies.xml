@@ -1,74 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_gravity="center"
-    app:cardElevation="5dp"
-    android:theme="@style/Base.CardView"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    app:cardCornerRadius="@dimen/card_radius">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <data>
+        <import type="com.example.elson.popmovies.data.model.MovieData" />
+        <variable name="model" type="MovieData" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="5dp">
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        app:cardElevation="5dp"
+        android:theme="@style/Base.CardView"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/card_radius">
 
-        <ImageView
-            android:id="@+id/moviePoster"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:importantForAccessibility="no"
-            android:scaleType="fitXY"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="5dp">
 
-        <TextView
-            android:id="@+id/movieName"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/moviePoster"
-            app:layout_constraintBottom_toTopOf="@id/favoriteButton"
-            tools:text="Movie Name" />
+            <ImageView
+                android:id="@+id/moviePoster"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ratingIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/content_description_ratings"
-            android:src="@android:drawable/btn_star_big_on"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/favoriteButton" />
+            <TextView
+                android:id="@+id/movieName"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:gravity="center"
+                android:text="@{model.title}"
+                app:layout_constraintTop_toBottomOf="@id/moviePoster"
+                app:layout_constraintBottom_toTopOf="@id/favoriteButton"
+                tools:text="Movie Name" />
 
-        <TextView
-            android:id="@+id/movieRating"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ratingIcon"
-            app:layout_constraintTop_toTopOf="@id/favoriteButton"
-            tools:text="8/10" />
+            <ImageView
+                android:id="@+id/ratingIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/content_description_ratings"
+                android:src="@android:drawable/btn_star_big_on"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/favoriteButton" />
 
-        <CheckBox
-            android:id="@+id/favoriteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@drawable/favourite_selector"
-            android:fitsSystemWindows="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/movieRating"
-            app:layout_constraintHorizontal_bias="1" />
+            <TextView
+                android:id="@+id/movieRating"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{model.rating}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ratingIcon"
+                app:layout_constraintTop_toTopOf="@id/favoriteButton"
+                tools:text="8/10" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <CheckBox
+                style="@style/FavouriteButtonStyle"
+                android:id="@+id/favoriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/favorite_button"
+                android:fitsSystemWindows="true"
+                android:checked="@{model.favorite}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/movieRating"
+                app:layout_constraintHorizontal_bias="1" />
 
-</androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

@@ -1,9 +1,7 @@
 package com.example.elson.popmovies.ui.movies;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -15,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.elson.popmovies.R;
+import com.example.elson.popmovies.dagger.app.AppInjector;
+import com.example.elson.popmovies.data.SecurePrefs;
 import com.example.elson.popmovies.data.model.MovieFullData;
 import com.example.elson.popmovies.data.model.MovieHeader;
 import com.example.elson.popmovies.network.MovieFetcher;
@@ -29,14 +29,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
 import io.realm.Realm;
 
 public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callbacks {
 
-    private static final String MOVIELIST = "MOVIEKEY";
-    private static final String QUERY = "QUERYKEY";
     private final int NUM_COLS = 2;
 
     @BindView(R.id.movieGrid)
@@ -57,11 +59,14 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
     @BindView(R.id.navView)
     NavigationView navView;
 
+    @Inject
+    SecurePrefs prefs;
+
     private ArrayList<Parcelable> movieList;
     private GridAdapter movieListAdapter;
     private GridLayoutManager movieLayoutManager;
-    @Nullable
-    private String query="popular";
+    @NonNull
+    private String query = "popular";
     private boolean mtwoPane;
     private int currentPgNo=1;
     private int totalPgNo=1;
@@ -70,6 +75,7 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         setContentView(R.layout.activity_pop_movies);
         ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
@@ -77,17 +83,10 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
         realm = Realm.getDefaultInstance();
         mtwoPane = container != null;
 
-        if (savedInstanceState != null) {
-            movieList = savedInstanceState.getParcelableArrayList(MOVIELIST);
-            query = savedInstanceState.getString(QUERY);
-            movieListAdapter = new GridAdapter(movieList, mtwoPane, getFragmentManager(), realm);
-            movieGridView.setAdapter(movieListAdapter);
-        } else {
-            movieList = new ArrayList<>();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            query = preferences.getString(QUERY,"popular");
-            movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(), realm);
-        }
+        movieList = new ArrayList<>();
+        movieListAdapter = new GridAdapter(getMovies(1), mtwoPane, getFragmentManager(),
+                realm);
+        query = prefs.getMoviesQuery();
 
         tabBar.selectTab(tabBar.getTabAt(getSelectedTabIndex()));
         tabBar.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -140,13 +139,6 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
 //                    .commit();
 //        }
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(MOVIELIST, movieList);
-        outState.putString(QUERY,query);
     }
 
     @Override
@@ -225,15 +217,14 @@ public class MoviesActivity extends BaseNavBarActivity implements Paginate.Callb
         if (position == 0) {
             query = "popular";
         } else if (position == 1) {
-            query = "top_rated";
+            query = "now_playing";
         } else if (position == 2) {
-            query = "favourites";
+            query = "upcoming";
+        } else {
+            query = "top_rated";
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(QUERY, query);
-        editor.apply();
+        prefs.putMoviesQuery(query);
 
         movieListAdapter.clear();
         movieListAdapter.add(getMovies(1));

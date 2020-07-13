@@ -12,17 +12,16 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidInjectionModule::class,
     BindingModule::class,
-    AppModule::class
+    AppModule::class,
+    ActivityModule::class
 ])
 interface AppComponent: AndroidInjector<MoviesApplication> {
 
     override fun inject(application: MoviesApplication)
-    val authenticationSubcomponentBuilder: AuthenticationSubComponent.Builder
+    val authenticationSubComponentFactory: AuthenticationSubComponent.Factory
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: MoviesApplication): Builder
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory: AndroidInjector.Factory<MoviesApplication> {
+        override fun create(@BindsInstance instance: MoviesApplication): AppComponent
     }
 }

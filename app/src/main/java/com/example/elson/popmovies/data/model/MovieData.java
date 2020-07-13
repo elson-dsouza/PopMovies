@@ -14,11 +14,15 @@ public class MovieData implements Parcelable {
     @SerializedName("id")
     Integer id;
     @SerializedName("poster_path") String poster;
+
     @Nullable
     @SerializedName("vote_average")
     Double rating;
+
     @SerializedName("title")
     String title;
+
+    boolean isFavorite;
 
     MovieData(@NonNull Parcel in) {
         id = in.readByte() == 0x00 ? null : in.readInt();
@@ -62,7 +66,7 @@ public class MovieData implements Parcelable {
 
     @NonNull
     public String getRating() {
-        return Double.toString(rating) + "/10";
+        return rating + "/10";
     }
 
     @Override
@@ -86,5 +90,9 @@ public class MovieData implements Parcelable {
             dest.writeDouble(rating);
         }
         dest.writeString(title);
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 }

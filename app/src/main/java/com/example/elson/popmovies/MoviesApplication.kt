@@ -20,9 +20,7 @@ open class MoviesApplication : DaggerApplication() {
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        val appComponent = DaggerAppComponent.builder()
-                .application(this)
-                .build()
+        val appComponent = DaggerAppComponent.factory().create(this)
         AppInjector.appComponent = appComponent
         return appComponent
     }

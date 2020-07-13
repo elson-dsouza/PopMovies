@@ -17,6 +17,9 @@ import com.example.elson.popmovies.ui.login.LoginActivity
 import com.example.elson.popmovies.ui.movies.MoviesActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,12 +31,12 @@ abstract class BaseNavBarActivity : AppCompatActivity() {
     protected abstract val drawerLayout: DrawerLayout
     protected abstract val navigationView: NavigationView
     protected abstract val rootLayout: View
-    @Inject lateinit var authenticationRepository: AuthenticationRepository
+    private val authenticationRepository = AppInjector
+            .getAuthenticationSubComponent().authenticationRepository()
     private lateinit var headerView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppInjector.getAuthenticationSubComponent().inject(this)
         actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout,
                 R.string.content_description_open_navbar, R.string.content_description_close_navbar)
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
