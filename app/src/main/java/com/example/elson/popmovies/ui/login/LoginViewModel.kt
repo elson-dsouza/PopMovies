@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.data.AuthenticationRepository
+import com.example.elson.popmovies.data.repository.AuthenticationRepository
 import com.example.elson.popmovies.data.Result
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,7 +30,7 @@ class LoginViewModel : ViewModel() {
     val loginResult: LiveData<LoginResult> = _loginResult
 
     init {
-        AppInjector.getAuthenticationSubComponent().inject(this)
+        AppInjector.getAuthenticationComponent().inject(this)
     }
 
     fun startRequestTokenGeneration() {

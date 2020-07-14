@@ -10,14 +10,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class MovieData implements Parcelable {
 
-    @Nullable
     @SerializedName("id")
-    Integer id;
-    @SerializedName("poster_path") String poster;
+    int id;
 
-    @Nullable
+    @SerializedName("poster_path")
+    String poster;
+
     @SerializedName("vote_average")
-    Double rating;
+    double rating;
 
     @SerializedName("title")
     String title;
@@ -25,9 +25,9 @@ public class MovieData implements Parcelable {
     boolean isFavorite;
 
     MovieData(@NonNull Parcel in) {
-        id = in.readByte() == 0x00 ? null : in.readInt();
+        id = in.readInt();
         poster = in.readString();
-        rating = in.readByte() == 0x00 ? null : in.readDouble();
+        rating = in.readDouble();
         title = in.readString();
     }
 
@@ -76,19 +76,11 @@ public class MovieData implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        if (id == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(id);
-        }
+        dest.writeByte((byte) (0x01));
+        dest.writeInt(id);
         dest.writeString(poster);
-        if (rating == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeDouble(rating);
-        }
+        dest.writeByte((byte) (0x01));
+        dest.writeDouble(rating);
         dest.writeString(title);
     }
 

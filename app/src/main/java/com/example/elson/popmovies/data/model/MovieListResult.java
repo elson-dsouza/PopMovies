@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Elson on 21-05-2016.
  */
-public class MovieHeader {
+public class MovieListResult {
 
     @SerializedName("page") int page;
     @SerializedName("results") List<MovieData> result;

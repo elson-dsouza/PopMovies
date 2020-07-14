@@ -3,7 +3,7 @@ package com.example.elson.popmovies.network;
 import androidx.annotation.NonNull;
 
 import com.example.elson.popmovies.data.model.MovieFullData;
-import com.example.elson.popmovies.data.model.MovieHeader;
+import com.example.elson.popmovies.data.model.MovieListResult;
 import com.example.elson.popmovies.data.model.ReviewsHeader;
 
 import retrofit2.Call;
@@ -15,11 +15,12 @@ import retrofit2.http.Query;
 /**
  * Created by Elson on 20-05-2016.
  */
-public interface FetchData {
+public interface Movies {
 
     @NonNull
-    @GET("/3/movie/{task}")
-    Call<MovieHeader> getMovies(@Path("task") String task, @Query("api_key") String key, @Query("page") String pg);
+    @GET("/3/movie/{category}")
+    Call<MovieListResult> getMovies(@Path("category") String category, @Query("api_key") String key,
+                                    @Query("page") int pg);
 
     @NonNull
     @GET("/3/movie/{id}")
@@ -30,6 +31,7 @@ public interface FetchData {
 
     @NonNull
     @GET("/3/movie/{id}/reviews")
-    Call<ReviewsHeader> getReviews(@Path("id") String id, @Query("api_key") String key, @Query("page") String pg);
+    Call<ReviewsHeader> getReviews(@Path("id") String id, @Query("api_key") String key,
+                                   @Query("page") String pg);
 
 }

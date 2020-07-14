@@ -1,5 +1,7 @@
-package com.example.elson.popmovies.data
+package com.example.elson.popmovies.data.repository
 
+import com.example.elson.popmovies.data.Result
+import com.example.elson.popmovies.data.SecurePrefs
 import com.example.elson.popmovies.data.model.LoggedInUser
 import com.example.elson.popmovies.data.model.RequestToken
 import com.example.elson.popmovies.network.Authentication
@@ -8,7 +10,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import retrofit2.Retrofit
 import java.io.IOException
 import javax.inject.Inject
 
@@ -22,9 +23,7 @@ class AuthenticationRepository @Inject constructor(
         private val securePrefs: SecurePrefs
 ) {
 
-    var user: LoggedInUser? = null
-        private set
-
+    private var user: LoggedInUser? = null
     private val userLock = Object()
 
     init {

@@ -6,7 +6,6 @@ import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.elson.popmovies.data.model.LoggedInUser
-import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
 import java.security.SecureRandom
 import javax.inject.Inject
@@ -20,7 +19,6 @@ class SecurePrefs @Inject constructor(context: Context) {
     private val masterKeyAlias: String
     private val sharedPreferences: SharedPreferences
     private val fileName = "SecurePrefsFile"
-
 
     init {
         val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
@@ -45,13 +43,13 @@ class SecurePrefs @Inject constructor(context: Context) {
     }
 
     fun saveUserCredentials(loggedInUser: LoggedInUser) {
-        val userCredsJson = Gson().toJson(loggedInUser)
-        sharedPreferences.edit().putString(KEY_USER_CREDENTIALS, userCredsJson).apply()
+        val userCredJson = Gson().toJson(loggedInUser)
+        sharedPreferences.edit().putString(KEY_USER_CREDENTIALS, userCredJson).apply()
     }
 
     fun getUserCredentials(): LoggedInUser? {
-        val userCredsJson = sharedPreferences.getString(KEY_USER_CREDENTIALS, "")
-        return Gson().fromJson(userCredsJson, LoggedInUser::class.java)
+        val userCredJson = sharedPreferences.getString(KEY_USER_CREDENTIALS, "")
+        return Gson().fromJson(userCredJson, LoggedInUser::class.java)
     }
 
     fun resetUserCredentials() {

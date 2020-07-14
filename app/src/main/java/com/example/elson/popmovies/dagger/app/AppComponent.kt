@@ -1,7 +1,8 @@
 package com.example.elson.popmovies.dagger.app
 
 import com.example.elson.popmovies.MoviesApplication
-import com.example.elson.popmovies.dagger.authentication.AuthenticationSubComponent
+import com.example.elson.popmovies.dagger.authentication.AuthenticationComponent
+import com.example.elson.popmovies.dagger.movies.MoviesComponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 interface AppComponent: AndroidInjector<MoviesApplication> {
 
     override fun inject(application: MoviesApplication)
-    val authenticationSubComponentFactory: AuthenticationSubComponent.Factory
+    val authenticationComponentFactory: AuthenticationComponent.Factory
+    val moviesComponentFactory: MoviesComponent.Factory
 
     @Component.Factory
     interface Factory: AndroidInjector.Factory<MoviesApplication> {

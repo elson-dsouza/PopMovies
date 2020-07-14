@@ -29,9 +29,6 @@ class LoginActivity : BaseNavBarActivity() {
     override val navigationView: NavigationView
         get() = navView
 
-    override val rootLayout: View
-        get() = container
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_login)
         super.onCreate(savedInstanceState)

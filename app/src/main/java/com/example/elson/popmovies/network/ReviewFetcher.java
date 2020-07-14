@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 
 import com.example.elson.popmovies.BuildConfig;
 import com.example.elson.popmovies.data.model.ReviewsHeader;
-import com.example.elson.popmovies.network.FetchData;
 
 import java.io.IOException;
 
@@ -21,11 +20,11 @@ public class ReviewFetcher extends AsyncTask<String, Void, ReviewsHeader> {
     @Nullable
     @Override
     protected ReviewsHeader doInBackground(String... params) {
-        FetchData fetch = new Retrofit.Builder()
+        Movies fetch = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(FetchData.class);
+                .create(Movies.class);
         Call<ReviewsHeader> call = fetch.getReviews(params[0], BuildConfig.TMDB_V3_API_TOKEN, params[1]);
         ReviewsHeader reviews = null;
         try {

@@ -1,6 +1,6 @@
 package com.example.elson.popmovies.dagger.authentication
 
-import com.example.elson.popmovies.data.AuthenticationRepository
+import com.example.elson.popmovies.data.repository.AuthenticationRepository
 import com.example.elson.popmovies.data.SecurePrefs
 import com.example.elson.popmovies.network.Authentication
 import dagger.Module

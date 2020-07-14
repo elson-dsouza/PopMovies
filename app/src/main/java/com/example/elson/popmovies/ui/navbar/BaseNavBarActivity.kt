@@ -11,18 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.data.AuthenticationRepository
 import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.ui.login.LoginActivity
 import com.example.elson.popmovies.ui.movies.MoviesActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
-import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 abstract class BaseNavBarActivity : AppCompatActivity() {
@@ -30,9 +25,8 @@ abstract class BaseNavBarActivity : AppCompatActivity() {
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     protected abstract val drawerLayout: DrawerLayout
     protected abstract val navigationView: NavigationView
-    protected abstract val rootLayout: View
     private val authenticationRepository = AppInjector
-            .getAuthenticationSubComponent().authenticationRepository()
+            .getAuthenticationComponent().authenticationRepository()
     private lateinit var headerView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,9 +71,9 @@ abstract class BaseNavBarActivity : AppCompatActivity() {
             val result = authenticationRepository.logoutAsync().await()
             refreshNavBar()
             if (result is Result.Success) {
-                Snackbar.make(rootLayout, R.string.logout_success, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(drawerLayout, R.string.logout_success, Snackbar.LENGTH_LONG).show()
             } else {
-                Snackbar.make(rootLayout, R.string.logout_failed, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(drawerLayout, R.string.logout_failed, Snackbar.LENGTH_LONG).show()
             }
         }
         drawerLayout.closeDrawers()
