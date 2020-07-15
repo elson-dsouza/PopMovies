@@ -1,14 +1,23 @@
-package com.example.elson.popmovies.ui.movies;
+package com.example.elson.popmovies.ui.movies.grid;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.data.SecurePrefs;
 import com.example.elson.popmovies.data.enumeration.MovieTypes;
+import com.example.elson.popmovies.data.model.MovieData;
+import com.example.elson.popmovies.ui.movies.detail.MovieDetailActivity;
+import com.example.elson.popmovies.ui.movies.detail.MovieDetailFragment;
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -18,7 +27,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
-import io.realm.Realm;
 
 public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTabSelectedListener {
 
@@ -34,11 +42,19 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
     @BindView(R.id.navView)
     NavigationView navView;
 
+    @Nullable
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.movieDetailFragment)
+    FragmentContainerView movieDetailFragment;
+
+
     @Inject
     SecurePrefs prefs;
 
     @NonNull
     private MovieTypes mode = MovieTypes.POPULAR;
+
+    private MoviesActivityViewModel activityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +65,19 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
         mode = prefs.getMoviesMode();
         tabBar.selectTab(tabBar.getTabAt(mode.ordinal()));
         tabBar.addOnTabSelectedListener(this);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
-                .commit();
+        activityViewModel = (new ViewModelProvider(this)).get(MoviesActivityViewModel.class);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
+                    .commit();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityViewModel.getSelectedMovie().observe(this, this::showMovieDetails);
     }
 
     @Override
@@ -97,5 +122,26 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
+    }
+
+    protected void showMovieDetails(@Nullable MovieData movie) {
+        if (movie == null) {
+            return;
+        }
+        if (movieDetailFragment == null) {
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra("data", movie);
+            startActivity(intent);
+            activityViewModel.clearSelectedMovie();
+        } else {
+            MovieDetailFragment detailFragment = new MovieDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("data", movie);
+            detailFragment.setArguments(bundle);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movieDetailFragment, detailFragment)
+                    .commit();
+        }
     }
 }

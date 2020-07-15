@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.ui.movies
+package com.example.elson.popmovies.ui.movies.grid
 
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,6 +40,7 @@ class MoviesFragment : Fragment() {
 
     private lateinit var fragmentViewModel: MoviesFragmentViewModel
     private lateinit var movieGridAdapter: MoviesGridAdapter
+    private val activityViewModel: MoviesActivityViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -99,19 +101,6 @@ class MoviesFragment : Fragment() {
     }
 
     fun loadDetails(movie: MovieData) {
-//        if (!isTwoPane) {
-//                Intent i = new Intent(v.getContext(), MovieDetail.class);
-//                i.putExtra("data", movieList.get(holder.getAdapterPosition()));
-//                v.getContext().startActivity(i);
-//
-//            } else {
-//                MovieDetailFragment detailFragment = new MovieDetailFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("data", movieList.get(holder.getAdapterPosition()));
-//                detailFragment.setArguments(bundle);
-//                fm.beginTransaction()
-//                        .replace(R.id.container, detailFragment)
-//                        .commit();
-//            }
+        activityViewModel.loadDetails(movie)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.ui.movies
+package com.example.elson.popmovies.ui.movies.grid
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -10,7 +10,6 @@ import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.enumeration.MovieTypes
 import com.example.elson.popmovies.data.model.MovieData
 import com.example.elson.popmovies.data.repository.MoviesRepository
-import com.facebook.stetho.common.LogUtil
 import com.paginate.Paginate
 import kotlinx.coroutines.launch
 import javax.inject.Inject

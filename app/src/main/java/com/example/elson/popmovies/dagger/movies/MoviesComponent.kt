@@ -1,6 +1,6 @@
 package com.example.elson.popmovies.dagger.movies
 
-import com.example.elson.popmovies.ui.movies.MoviesFragmentViewModel
+import com.example.elson.popmovies.ui.movies.grid.MoviesFragmentViewModel
 import dagger.Subcomponent
 
 @MoviesScope

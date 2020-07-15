@@ -13,7 +13,7 @@ import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.ui.login.LoginActivity
-import com.example.elson.popmovies.ui.movies.MoviesActivity
+import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope

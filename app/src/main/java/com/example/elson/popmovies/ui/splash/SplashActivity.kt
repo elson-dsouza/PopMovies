@@ -3,7 +3,7 @@ package com.example.elson.popmovies.ui.splash
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.elson.popmovies.ui.movies.MoviesActivity
+import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 
 class SplashActivity : AppCompatActivity() {
 

@@ -9,7 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.elson.popmovies.R
-import com.example.elson.popmovies.ui.movies.MoviesActivity
+import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar

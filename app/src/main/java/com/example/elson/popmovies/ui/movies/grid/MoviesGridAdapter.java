@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.ui.movies;
+package com.example.elson.popmovies.ui.movies.grid;
 
 import android.content.Context;
 import android.view.LayoutInflater;

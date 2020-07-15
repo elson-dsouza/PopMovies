@@ -1,6 +1,6 @@
 package com.example.elson.popmovies.dagger.app
 
-import com.example.elson.popmovies.ui.movies.MoviesActivity
+import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
