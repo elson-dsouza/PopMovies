@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.elson.popmovies.data.enumeration.MovieTypes
 import com.example.elson.popmovies.data.model.LoggedInUser
 import com.google.gson.Gson
 import java.security.SecureRandom
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 private const val KEY_USER_CREDENTIALS = "user_credentials"
 private const val DB_KEY = "db_key"
-private const val MOVIES_QUERY = "movies_query"
+private const val MOVIES_MODE = "movies_mode"
 
 class SecurePrefs @Inject constructor(context: Context) {
 
@@ -56,11 +57,12 @@ class SecurePrefs @Inject constructor(context: Context) {
         sharedPreferences.edit().remove(KEY_USER_CREDENTIALS).apply()
     }
 
-    fun getMoviesQuery(): String {
-        return sharedPreferences.getString(MOVIES_QUERY,"popular")!!
+    fun getMoviesMode(): MovieTypes {
+        return sharedPreferences.getString(MOVIES_MODE, null)
+                ?.let { MovieTypes.valueOf(it) } ?: MovieTypes.POPULAR
     }
 
-    fun putMoviesQuery(query: String) {
-        return sharedPreferences.edit().putString(MOVIES_QUERY,query).apply()
+    fun setMoviesMode(mode: MovieTypes) {
+        return sharedPreferences.edit().putString(MOVIES_MODE, mode.name).apply()
     }
 }

@@ -19,39 +19,44 @@ public class MovieFullData extends RealmObject implements Parcelable {
     @PrimaryKey
     @SerializedName("id")
     int id;
+
     @SerializedName("title")
     String title;
+
     @SerializedName("runtime")
     int duration;
+
     @SerializedName("release_date")
     String release;
-    @Nullable
+
     @SerializedName("vote_average")
-    Double rating;
+    double rating;
+
     @SerializedName("overview")
     String description;
+
     @SerializedName("poster_path")
     String poster;
-    @Nullable
+
     @SerializedName("adult")
-    Boolean isAdult;
+    boolean isAdult;
+
     @SerializedName("backdrop_path")
     String backdrop;
+
+    public MovieFullData() {
+    }
 
     protected MovieFullData(@NonNull Parcel in) {
         id = in.readInt();
         title = in.readString();
         duration = in.readInt();
         release = in.readString();
-        rating = in.readByte() == 0x00 ? null : in.readDouble();
+        rating = in.readDouble();
         description = in.readString();
         poster = in.readString();
-        byte isAdultVal = in.readByte();
-        isAdult = isAdultVal == 0x02 ? null : isAdultVal != 0x00;
+        isAdult = in.readByte() != 0x00;
         backdrop = in.readString();
-    }
-
-    public MovieFullData() {
     }
 
     public static final Creator<MovieFullData> CREATOR = new Creator<MovieFullData>() {
@@ -66,6 +71,7 @@ public class MovieFullData extends RealmObject implements Parcelable {
         }
     };
 
+    @NonNull
     public String getTitle() {
         return title;
     }
@@ -80,10 +86,12 @@ public class MovieFullData extends RealmObject implements Parcelable {
         return Double.toString(rating) + "/10";
     }
 
+    @NonNull
     public String getDescription() {
         return description;
     }
 
+    @Nullable
     public String getPoster() {
         return poster;
     }
@@ -92,17 +100,22 @@ public class MovieFullData extends RealmObject implements Parcelable {
         return id;
     }
 
+    @NonNull
     public String getRelease() {
         return release;
     }
 
-    @Nullable
-    public Boolean getIsAdult() {
+    public boolean getIsAdult() {
         return isAdult;
     }
 
+    @Nullable
     public String getBackdrop() {
         return backdrop;
+    }
+
+    public double getRawRating() {
+        return rating;
     }
 
     @Override
@@ -116,24 +129,10 @@ public class MovieFullData extends RealmObject implements Parcelable {
         dest.writeString(title);
         dest.writeInt(duration);
         dest.writeString(release);
-        if (rating == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeDouble(rating);
-        }
+        dest.writeDouble(rating);
         dest.writeString(description);
         dest.writeString(poster);
-        if (isAdult == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isAdult ? 0x01 : 0x00));
-        }
+        dest.writeByte((byte) (isAdult ? 0x01 : 0x00));
         dest.writeString(backdrop);
-    }
-
-    @Nullable
-    public Double getRawRating() {
-        return rating;
     }
 }

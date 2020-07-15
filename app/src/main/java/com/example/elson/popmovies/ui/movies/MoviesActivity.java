@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentContainerView;
 
 import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.data.SecurePrefs;
+import com.example.elson.popmovies.data.enumeration.MovieTypes;
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -38,9 +38,7 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
     SecurePrefs prefs;
 
     @NonNull
-    private String query = "popular";
-
-    private Realm realm;
+    private MovieTypes mode = MovieTypes.POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +46,12 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
         setContentView(R.layout.activity_pop_movies);
         ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
-
-        realm = Realm.getDefaultInstance();
-        query = prefs.getMoviesQuery();
-
-        tabBar.selectTab(tabBar.getTabAt(getSelectedTabIndex()));
+        mode = prefs.getMoviesMode();
+        tabBar.selectTab(tabBar.getTabAt(mode.ordinal()));
         tabBar.addOnTabSelectedListener(this);
-
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(query))
+                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
                 .commit();
     }
 
@@ -72,22 +66,6 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
 //            }
 //        }
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }
-
-    private int getSelectedTabIndex() {
-        if (query.equalsIgnoreCase("popular")) {
-            return 0;
-        } else if (query.equalsIgnoreCase("top_rated")) {
-            return 1;
-        } else {
-            return 2;
-        }
     }
 
     @NonNull
@@ -105,20 +83,11 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         int position = tab.getPosition();
-        if (position == 0) {
-            query = "popular";
-        } else if (position == 1) {
-            query = "now_playing";
-        } else if (position == 2) {
-            query = "upcoming";
-        } else {
-            query = "top_rated";
-        }
-        prefs.putMoviesQuery(query);
-
+        mode = MovieTypes.values()[position];
+        prefs.setMoviesMode(mode);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(query))
+                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
                 .commit();
     }
 

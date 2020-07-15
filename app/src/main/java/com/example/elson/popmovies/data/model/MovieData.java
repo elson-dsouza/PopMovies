@@ -8,8 +8,13 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MovieData implements Parcelable {
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class MovieData extends RealmObject implements Parcelable {
+
+    @PrimaryKey
     @SerializedName("id")
     int id;
 
@@ -22,9 +27,10 @@ public class MovieData implements Parcelable {
     @SerializedName("title")
     String title;
 
-    boolean isFavorite;
+    public MovieData() {
+    }
 
-    MovieData(@NonNull Parcel in) {
+    public MovieData(@NonNull Parcel in) {
         id = in.readInt();
         poster = in.readString();
         rating = in.readDouble();
@@ -52,6 +58,7 @@ public class MovieData implements Parcelable {
         }
     };
 
+    @Nullable
     public String getPoster() {
         return poster;
     }
@@ -60,6 +67,7 @@ public class MovieData implements Parcelable {
         return id;
     }
 
+    @NonNull
     public String getTitle() {
         return title;
     }
@@ -67,6 +75,12 @@ public class MovieData implements Parcelable {
     @NonNull
     public String getRating() {
         return rating + "/10";
+    }
+
+    public boolean isFavorite() {
+        try (Realm db = Realm.getDefaultInstance()){
+            return db.where(MovieData.class).equalTo("id", id).findFirst() != null;
+        }
     }
 
     @Override
@@ -82,9 +96,5 @@ public class MovieData implements Parcelable {
         dest.writeByte((byte) (0x01));
         dest.writeDouble(rating);
         dest.writeString(title);
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
     }
 }

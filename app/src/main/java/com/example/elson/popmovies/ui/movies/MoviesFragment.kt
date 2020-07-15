@@ -1,6 +1,7 @@
 package com.example.elson.popmovies.ui.movies
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.elson.popmovies.R
+import com.example.elson.popmovies.data.enumeration.MovieTypes
 import com.example.elson.popmovies.data.model.MovieData
 import com.paginate.Paginate
 import kotlinx.android.synthetic.main.movies_fragment.movieGrid
@@ -21,14 +23,16 @@ import kotlinx.android.synthetic.main.movies_fragment.view.movieGrid
 private const val NUM_COLS = 2
 private const val ITEM_CACHE_SIZE = 32
 
+private const val ARG_MOVIE_TYPE = "MOVIE_TYPE"
+private const val LOG_TAG = "MoviesFrag"
+
 class MoviesFragment : Fragment() {
 
     companion object {
-
         @JvmStatic
-        fun newInstance(query: String) = MoviesFragment().apply {
+        fun newInstance(mode: MovieTypes) = MoviesFragment().apply {
             arguments = Bundle().apply {
-
+                putString(ARG_MOVIE_TYPE, mode.name)
             }
         }
     }
@@ -61,7 +65,10 @@ class MoviesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val mode = arguments?.getString(ARG_MOVIE_TYPE)?.let { MovieTypes.valueOf(it) }
+                ?: MovieTypes.POPULAR
         fragmentViewModel = ViewModelProvider(this).get(MoviesFragmentViewModel::class.java)
+        fragmentViewModel.mode = mode
         fragmentViewModel.refreshMovieList()
 
         //Setup pagination
@@ -76,7 +83,11 @@ class MoviesFragment : Fragment() {
         })
     }
 
-    fun loadMoviePoster(moviePoster: String, posterView: ImageView) {
+    fun loadMoviePoster(moviePoster: String?, posterView: ImageView) {
+        if (moviePoster.isNullOrBlank()) {
+            Log.e(LOG_TAG, "Poster for movie is null or blank")
+            return
+        }
         Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w185/$moviePoster")
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -84,10 +95,23 @@ class MoviesFragment : Fragment() {
     }
 
     fun toggleFavouriteState(movie: MovieData) {
-
+        fragmentViewModel.toggleFavouriteState(movie)
     }
 
     fun loadDetails(movie: MovieData) {
-
+//        if (!isTwoPane) {
+//                Intent i = new Intent(v.getContext(), MovieDetail.class);
+//                i.putExtra("data", movieList.get(holder.getAdapterPosition()));
+//                v.getContext().startActivity(i);
+//
+//            } else {
+//                MovieDetailFragment detailFragment = new MovieDetailFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable("data", movieList.get(holder.getAdapterPosition()));
+//                detailFragment.setArguments(bundle);
+//                fm.beginTransaction()
+//                        .replace(R.id.container, detailFragment)
+//                        .commit();
+//            }
     }
 }

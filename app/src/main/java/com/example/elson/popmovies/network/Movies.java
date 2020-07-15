@@ -24,7 +24,7 @@ public interface Movies {
 
     @NonNull
     @GET("/3/movie/{id}")
-    Call<MovieFullData> getData(@Path("id") String id, @Query("api_key") String key);
+    Call<MovieFullData> getData(@Path("id") int id, @Query("api_key") String key);
 
 //    @GET("/3/movie/{id}/videos")
 //    Call<VideoResponse> getVideos(@Path("id") String id, @Query("api_key") String key);
