@@ -45,15 +45,6 @@
                 app:layout_constraintBottom_toTopOf="@id/favoriteButton"
                 tools:text="Movie Name" />
 
-            <ImageView
-                android:id="@+id/ratingIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/content_description_ratings"
-                android:src="@android:drawable/btn_star_big_on"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/favoriteButton" />
 
             <TextView
                 android:id="@+id/movieRating"
@@ -61,8 +52,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{model.rating}"
+                android:drawableStart="@drawable/ratings_icon"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ratingIcon"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/favoriteButton"
                 tools:text="8/10" />
 

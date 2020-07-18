@@ -3,7 +3,6 @@ package com.example.elson.popmovies.data.repository
 import com.example.elson.popmovies.BuildConfig
 import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.model.MovieData
-import com.example.elson.popmovies.data.model.MovieFullData
 import com.example.elson.popmovies.data.model.MovieListResult
 import com.example.elson.popmovies.network.Movies
 import io.realm.Realm
@@ -57,5 +56,21 @@ class MoviesRepository @Inject constructor(
         db.beginTransaction()
         db.copyToRealmOrUpdate(movie)
         db.commitTransaction()
+    }
+
+    suspend fun fetchMovieDetailsAsync(id: Long) = coroutineScope {
+        async(Dispatchers.IO) {
+            try {
+                val response = movies.getData(id,
+                        BuildConfig.TMDB_V3_API_TOKEN).execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
+                } else {
+                    Result.Error(IOException(response.message()))
+                }
+            } catch (e: IOException) {
+                Result.Error(e)
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.example.elson.popmovies.network;
 
 import androidx.annotation.NonNull;
 
-import com.example.elson.popmovies.data.model.MovieFullData;
+import com.example.elson.popmovies.data.model.FullMovieData;
 import com.example.elson.popmovies.data.model.MovieListResult;
 import com.example.elson.popmovies.data.model.ReviewsHeader;
 
@@ -24,7 +24,7 @@ public interface Movies {
 
     @NonNull
     @GET("/3/movie/{id}")
-    Call<MovieFullData> getData(@Path("id") int id, @Query("api_key") String key);
+    Call<FullMovieData> getData(@Path("id") long id, @Query("api_key") String key);
 
 //    @GET("/3/movie/{id}/videos")
 //    Call<VideoResponse> getVideos(@Path("id") String id, @Query("api_key") String key);

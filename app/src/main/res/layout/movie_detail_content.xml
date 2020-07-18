@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.example.elson.popmovies.data.model.FullMovieData" />
+        <variable name="model" type="FullMovieData" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:showIn="@layout/movie_detail_fragment">
+
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_margin="1dp"
+            tools:src="@drawable/splash_drawable"
+            android:importantForAccessibility="no"
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.4" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:text="@{model.title}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/moviePoster"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.55"
+            tools:text="Title Of The Movie" />
+
+        <TextView
+            android:id="@+id/subTitle"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:maxLines="2"
+            android:text="@{model.tagline}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/moviePoster"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintWidth_percent="0.55"
+            tools:text="Subtitle Of The Movie with some more info" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/genres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/moviePoster"
+            app:layout_constraintTop_toBottomOf="@id/subTitle"
+            app:layout_constraintWidth_percent="0.55" />
+
+        <CheckBox
+            style="@style/FavouriteButtonStyle"
+            android:id="@+id/favoriteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/favorite_button"
+            android:fitsSystemWindows="true"
+            android:checked="@{model.favorite}"
+            app:layout_constraintTop_toBottomOf="@id/genres"
+            app:layout_constraintBottom_toTopOf="@id/headingBarrier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="1" />
+
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/headingBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="favoriteButton,moviePoster" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?android:attr/colorButtonNormal"
+            app:layout_constraintTop_toTopOf="@id/headingBarrier"
+            app:layout_constraintBottom_toTopOf="@id/infoBarrier"/>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:id="@+id/durationContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/duration_icon"
+            android:gravity="center"
+            android:padding="5dp"
+            android:layout_marginVertical="10dp"
+            android:text="@{model.duration}"
+            tools:text="Duration"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ratingContainer"
+            app:layout_constraintTop_toBottomOf="@id/headingBarrier"
+            app:layout_constraintVertical_chainStyle="spread"/>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:id="@+id/ratingContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/ratings_icon"
+            android:text="@{model.rating}"
+            android:padding="5dp"
+            tools:text="Rating"
+            app:layout_constraintStart_toEndOf="@id/durationContainer"
+            app:layout_constraintEnd_toStartOf="@id/releaseContainer"
+            app:layout_constraintTop_toBottomOf="@id/headingBarrier"
+            app:layout_constraintVertical_chainStyle="spread"/>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:id="@+id/releaseContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:drawableTop="@drawable/date_icon"
+            android:text="@{model.release}"
+            android:padding="5dp"
+            tools:text="Release"
+            app:layout_constraintStart_toEndOf="@id/ratingContainer"
+            app:layout_constraintEnd_toStartOf="@id/ageRatingContainer"
+            app:layout_constraintTop_toBottomOf="@id/headingBarrier"
+            app:layout_constraintVertical_chainStyle="spread"/>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:id="@+id/ageRatingContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:drawableTop="@{model.isAdult ? @drawable/explicit_icon : @drawable/safe_icon}"
+            android:text="@{model.isAdult ? @string/adults_only_title : @string/everyone_title}"
+            android:padding="5dp"
+            tools:text="Child Safe"
+            app:layout_constraintStart_toEndOf="@id/releaseContainer"
+            app:layout_constraintTop_toBottomOf="@id/headingBarrier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="spread"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/infoBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="ageRatingContainer,durationContainer, ratingContainer, releaseContainer"
+            android:background="?android:attr/listDivider"/>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:id="@+id/descriptionTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/description_title"
+            android:padding="5dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/infoBarrier" />
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:singleLine="false"
+            android:text="@{model.description}"
+            android:paddingHorizontal="5dp"
+            tools:text="Foo Bar Movie Description"
+            app:layout_constraintTop_toBottomOf="@id/descriptionTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

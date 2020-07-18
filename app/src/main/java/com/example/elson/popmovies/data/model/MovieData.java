@@ -16,7 +16,7 @@ public class MovieData extends RealmObject implements Parcelable {
 
     @PrimaryKey
     @SerializedName("id")
-    int id;
+    long id;
 
     @SerializedName("poster_path")
     String poster;
@@ -31,17 +31,10 @@ public class MovieData extends RealmObject implements Parcelable {
     }
 
     public MovieData(@NonNull Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         poster = in.readString();
         rating = in.readDouble();
         title = in.readString();
-    }
-
-    public MovieData(@NonNull MovieFullData data) {
-        this.id = data.getId();
-        this.poster = data.getPoster();
-        this.title = data.getTitle();
-        this.rating = data.getRawRating();
     }
 
     public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
@@ -63,7 +56,7 @@ public class MovieData extends RealmObject implements Parcelable {
         return poster;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -90,10 +83,8 @@ public class MovieData extends RealmObject implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeByte((byte) (0x01));
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(poster);
-        dest.writeByte((byte) (0x01));
         dest.writeDouble(rating);
         dest.writeString(title);
     }

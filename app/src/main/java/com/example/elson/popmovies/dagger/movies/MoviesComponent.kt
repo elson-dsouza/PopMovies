@@ -1,5 +1,6 @@
 package com.example.elson.popmovies.dagger.movies
 
+import com.example.elson.popmovies.ui.movies.detail.MovieDetailViewModel
 import com.example.elson.popmovies.ui.movies.grid.MoviesFragmentViewModel
 import dagger.Subcomponent
 
@@ -10,6 +11,7 @@ import dagger.Subcomponent
 interface MoviesComponent {
 
     fun inject(viewModel: MoviesFragmentViewModel)
+    fun inject(viewModel: MovieDetailViewModel)
 
     @Subcomponent.Factory
     interface Factory {

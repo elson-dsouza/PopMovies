@@ -14,4 +14,8 @@
     <string name="tab_now_playing">Now Playing</string>
     <string name="tab_upcoming">Upcoming</string>
     <string name="tab_top_rated">Top Rated</string>
+
+    <string name="adults_only_title">Adults only</string>
+    <string name="everyone_title">All Audience</string>
+    <string name="description_title">Description</string>
 </resources>

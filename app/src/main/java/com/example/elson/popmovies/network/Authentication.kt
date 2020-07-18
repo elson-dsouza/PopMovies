@@ -2,15 +2,12 @@ package com.example.elson.popmovies.network
 
 import com.example.elson.popmovies.BuildConfig
 import com.example.elson.popmovies.data.model.LoggedInUser
-import com.example.elson.popmovies.data.model.MovieFullData
 import com.example.elson.popmovies.data.model.RequestToken
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.HTTP
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface Authentication {

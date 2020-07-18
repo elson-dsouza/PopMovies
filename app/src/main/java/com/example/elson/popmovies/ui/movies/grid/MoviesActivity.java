@@ -129,18 +129,12 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
             return;
         }
         if (movieDetailFragment == null) {
-            Intent intent = new Intent(this, MovieDetailActivity.class);
-            intent.putExtra("data", movie);
-            startActivity(intent);
+            startActivity(MovieDetailActivity.getIntent(this, movie));
             activityViewModel.clearSelectedMovie();
         } else {
-            MovieDetailFragment detailFragment = new MovieDetailFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("data", movie);
-            detailFragment.setArguments(bundle);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.movieDetailFragment, detailFragment)
+                    .replace(R.id.movieDetailFragment, MovieDetailFragment.newInstance(movie))
                     .commit();
         }
     }
