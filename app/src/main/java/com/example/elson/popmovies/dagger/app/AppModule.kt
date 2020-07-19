@@ -2,6 +2,7 @@ package com.example.elson.popmovies.dagger.app
 
 import android.content.Context
 import com.example.elson.popmovies.data.SecurePrefs
+import com.example.elson.popmovies.network.gson.getNetworkGson
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -22,7 +23,7 @@ open class AppModule {
         return Retrofit.Builder()
                 .client(buildOkHttpClient())
                 .baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(getNetworkGson()))
                 .build()
     }
 

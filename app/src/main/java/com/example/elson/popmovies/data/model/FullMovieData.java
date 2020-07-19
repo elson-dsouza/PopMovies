@@ -6,9 +6,15 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -49,6 +55,12 @@ public class FullMovieData extends RealmObject implements Parcelable {
     @SerializedName("title")
     String title;
 
+    @SerializedName("genres")
+    RealmList<Genre> genres;
+
+    @SerializedName("videos")
+    RealmList<Video>  videos;
+
     public FullMovieData() {
     }
 
@@ -63,6 +75,10 @@ public class FullMovieData extends RealmObject implements Parcelable {
         isAdult = in.readByte() != 0x00;
         backdrop = in.readString();
         tagline = in.readString();
+        genres = new RealmList<>();
+        in.readList(genres, Genre.class.getClassLoader());
+        videos = new RealmList<>();
+        in.readList(videos, Video.class.getClassLoader());
     }
 
     public static final Creator<FullMovieData> CREATOR = new Creator<FullMovieData>() {
@@ -129,6 +145,20 @@ public class FullMovieData extends RealmObject implements Parcelable {
         return rating + "/10";
     }
 
+    @NonNull
+    public List<String> getGenres() {
+        List<String> genresList = new ArrayList<>(genres.size());
+        for (Genre genre : genres) {
+            genresList.add(genre.getName());
+        }
+        return genresList;
+    }
+
+    @NonNull
+    public List<Video> getVideos() {
+        return Collections.unmodifiableList(videos);
+    }
+
     public boolean isFavorite() {
         try (Realm db = Realm.getDefaultInstance()){
             return db.where(MovieData.class).equalTo("id", id).findFirst() != null;
@@ -152,5 +182,7 @@ public class FullMovieData extends RealmObject implements Parcelable {
         dest.writeByte((byte) (isAdult ? 0x01 : 0x00));
         dest.writeString(backdrop);
         dest.writeString(tagline);
+        dest.writeList(genres);
+        dest.writeList(videos);
     }
 }

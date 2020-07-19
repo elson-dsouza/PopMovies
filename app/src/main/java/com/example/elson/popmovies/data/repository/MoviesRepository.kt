@@ -62,7 +62,7 @@ class MoviesRepository @Inject constructor(
         async(Dispatchers.IO) {
             try {
                 val response = movies.getData(id,
-                        BuildConfig.TMDB_V3_API_TOKEN).execute()
+                        BuildConfig.TMDB_V3_API_TOKEN, "videos").execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {

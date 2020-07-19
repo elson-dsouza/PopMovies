@@ -20,6 +20,8 @@ class MovieDetailViewModel : ViewModel() {
     private val _fullMovieData = MutableLiveData<FullMovieData>()
     val fullMovieData: LiveData<FullMovieData> = _fullMovieData
 
+    private val _movieData = MutableLiveData<MovieData>()
+
     @Inject
     lateinit var moviesRepository: MoviesRepository
 
@@ -28,6 +30,7 @@ class MovieDetailViewModel : ViewModel() {
     }
 
     fun load(movie: MovieData) {
+        _movieData.value = movie
         viewModelScope.launch {
             val result = moviesRepository.fetchMovieDetailsAsync(movie.id).await()
             if (result is Result.Success) {
@@ -36,6 +39,12 @@ class MovieDetailViewModel : ViewModel() {
                 Log.e(LOG_TAG, "Unable to fetch movie details",
                         (result as Result.Error).exception)
             }
+        }
+    }
+
+    fun toggleFavouriteState() {
+        viewModelScope.launch {
+            _movieData.value?.let { moviesRepository.toggleFavouriteStateAsync(it).await() }
         }
     }
 }

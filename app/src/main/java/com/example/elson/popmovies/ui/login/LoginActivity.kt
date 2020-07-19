@@ -1,6 +1,8 @@
 package com.example.elson.popmovies.ui.login
 
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
@@ -58,6 +60,10 @@ class LoginActivity : BaseNavBarActivity() {
             }
         })
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            oAuthWebView.isForceDarkAllowed = true
+        }
+        oAuthWebView.setBackgroundColor(Color.TRANSPARENT)
         oAuthWebView.webViewClient = object: WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return loginViewModel.handleOAuthRedirect(url)

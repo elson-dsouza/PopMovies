@@ -24,10 +24,8 @@ public interface Movies {
 
     @NonNull
     @GET("/3/movie/{id}")
-    Call<FullMovieData> getData(@Path("id") long id, @Query("api_key") String key);
-
-//    @GET("/3/movie/{id}/videos")
-//    Call<VideoResponse> getVideos(@Path("id") String id, @Query("api_key") String key);
+    Call<FullMovieData> getData(@Path("id") long id, @Query("api_key") String key,
+                                @Query("append_to_response") String responseAdditions);
 
     @NonNull
     @GET("/3/movie/{id}/reviews")

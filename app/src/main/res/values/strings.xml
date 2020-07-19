@@ -18,4 +18,5 @@
     <string name="adults_only_title">Adults only</string>
     <string name="everyone_title">All Audience</string>
     <string name="description_title">Description</string>
+    <string name="videos_title">Videos</string>
 </resources>
