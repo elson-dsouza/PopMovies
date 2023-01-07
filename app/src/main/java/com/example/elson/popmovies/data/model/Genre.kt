@@ -2,16 +2,16 @@ package com.example.elson.popmovies.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import io.realm.RealmObject
-import kotlinx.android.parcel.Parcelize
+import io.realm.kotlin.types.RealmObject
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-open class Genre @JvmOverloads constructor (
-        @SerializedName("name") open var name: String = ""
-) : RealmObject(), Parcelable {
+class Genre : RealmObject, Parcelable {
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    @IgnoredOnParcel
+    @SerializedName("name")
+    var name: String = ""
 
+    override fun describeContents() = 0
 }

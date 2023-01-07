@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.data.repository.AuthenticationRepository
 import com.example.elson.popmovies.data.Result
+import com.example.elson.popmovies.data.repository.AuthenticationRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,11 +39,12 @@ class LoginViewModel : ViewModel() {
                 clientId = UUID.randomUUID().toString()
                 val responseUri = "$responseDomain$clientId"
                 val result = authenticationRepository.generateRequestTokenAsync(
-                        responseUri).await()
+                    responseUri
+                ).await()
                 if (result is Result.Success) {
                     requestToken = result.data.requestToken
                     _loginUrl.value = "https://www.themoviedb.org/auth/access?request_token=" +
-                            requestToken
+                        requestToken
                     delay(13 * DateUtils.MINUTE_IN_MILLIS)
                 } else {
                     _loginResult.value = LoginResult(error = R.string.login_failed)
@@ -70,7 +71,7 @@ class LoginViewModel : ViewModel() {
     private fun requestAccessToken(requestToken: String) {
         viewModelScope.launch {
             val result = authenticationRepository
-                    .requestAccessTokenAsync(requestToken).await()
+                .requestAccessTokenAsync(requestToken).await()
             if (result is Result.Success) {
                 authenticationRepository.setLoggedInUser(result.data)
                 _loginResult.value = LoginResult(success = true)

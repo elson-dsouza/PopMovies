@@ -5,69 +5,72 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.elson.popmovies.R
+import com.example.elson.popmovies.databinding.ActivityLoginBinding
 import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_login.container
-import kotlinx.android.synthetic.main.activity_login.navDrawer
-import kotlinx.android.synthetic.main.activity_login.navView
-import kotlinx.android.synthetic.main.activity_login.oAuthWebView
-import kotlinx.android.synthetic.main.activity_login.progressBar
 
 class LoginActivity : BaseNavBarActivity() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var dataBinding: ActivityLoginBinding
+
+    private val loginViewModel by viewModels<LoginViewModel>()
 
     override val drawerLayout: DrawerLayout
-        get() = navDrawer
+        get() = dataBinding.navDrawer
 
     override val navigationView: NavigationView
-        get() = navView
+        get() = dataBinding.navView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_login)
+        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         super.onCreate(savedInstanceState)
 
-        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
-            if (loginResult.error != null) {
-                Snackbar.make(container, loginResult.error, Snackbar.LENGTH_LONG).show()
-            } else if (loginResult.success == true) {
-                val intent = Intent(this, MoviesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-                startActivity(intent)
-                finish()
+        loginViewModel.loginResult.observe(
+            this@LoginActivity,
+            Observer {
+                val loginResult = it ?: return@Observer
+                if (loginResult.error != null) {
+                    Snackbar.make(dataBinding.container, loginResult.error, Snackbar.LENGTH_LONG).show()
+                } else if (loginResult.success == true) {
+                    val intent = Intent(this, MoviesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    startActivity(intent)
+                    finish()
+                }
             }
-        })
+        )
 
-        loginViewModel.loginUrl.observe(this@LoginActivity, Observer {
-            if (it == null) {
-                oAuthWebView.visibility = View.GONE
-                progressBar.visibility = View.VISIBLE
-            } else {
-                oAuthWebView.loadUrl(it)
-                oAuthWebView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
+        loginViewModel.loginUrl.observe(
+            this@LoginActivity,
+            Observer {
+                if (it == null) {
+                    dataBinding.oAuthWebView.visibility = View.GONE
+                    dataBinding.progressBar.visibility = View.VISIBLE
+                } else {
+                    dataBinding.oAuthWebView.loadUrl(it)
+                    dataBinding.oAuthWebView.visibility = View.VISIBLE
+                    dataBinding.progressBar.visibility = View.GONE
+                }
             }
-        })
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            oAuthWebView.isForceDarkAllowed = true
+            dataBinding.oAuthWebView.isForceDarkAllowed = true
         }
-        oAuthWebView.setBackgroundColor(Color.TRANSPARENT)
-        oAuthWebView.webViewClient = object: WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return loginViewModel.handleOAuthRedirect(url)
-            }
+        dataBinding.oAuthWebView.setBackgroundColor(Color.TRANSPARENT)
+        dataBinding.oAuthWebView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest) =
+                loginViewModel.handleOAuthRedirect(request.url.toString())
         }
     }
 

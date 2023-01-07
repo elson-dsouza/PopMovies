@@ -5,5 +5,5 @@ import com.google.gson.GsonBuilder
 
 @Synchronized
 fun getNetworkGson(): Gson = GsonBuilder()
-        .registerTypeAdapter(FullMovieDataAdapter.getTypeToken(), FullMovieDataAdapter())
-        .create()
+    .registerTypeAdapter(FullMovieDataAdapter.getTypeToken(), FullMovieDataAdapter())
+    .create()

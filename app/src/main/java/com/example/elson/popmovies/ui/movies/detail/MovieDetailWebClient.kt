@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.webkit.WebChromeClient
 import android.widget.FrameLayout
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 internal class MovieDetailWebClient(private val activity: Activity) : WebChromeClient() {
     private var mCustomView: View? = null
     private var mCustomViewCallback: CustomViewCallback? = null
 
     override fun onHideCustomView() {
+        mCustomView?.visibility = View.GONE
         (activity.window.decorView as FrameLayout).removeView(mCustomView)
+        mCustomViewCallback?.onCustomViewHidden()
         mCustomView = null
-        mCustomViewCallback!!.onCustomViewHidden()
         mCustomViewCallback = null
         showSystemUI()
     }
@@ -29,22 +33,20 @@ internal class MovieDetailWebClient(private val activity: Activity) : WebChromeC
         paramView.setBackgroundColor(Color.BLACK)
         mCustomView = paramView
         mCustomViewCallback = paramCustomViewCallback
-        (activity.window.decorView as FrameLayout).addView(mCustomView,
-                FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        (activity.window.decorView as FrameLayout).addView(
+            mCustomView,
+            FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        )
     }
 
     private fun hideSystemUI() {
-        activity.window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        val windowController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+        windowController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        windowController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
     private fun showSystemUI() {
-        activity.window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        val windowController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+        windowController.show(WindowInsetsCompat.Type.systemBars())
     }
 }

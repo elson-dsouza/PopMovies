@@ -1,7 +1,5 @@
 package com.example.elson.popmovies.dagger.app
 
-import android.content.Context
-import com.example.elson.popmovies.data.SecurePrefs
 import com.example.elson.popmovies.network.gson.getNetworkGson
 import dagger.Module
 import dagger.Provides
@@ -15,18 +13,14 @@ open class AppModule {
 
     @Singleton
     @Provides
-    fun providePrefs(context: Context) = SecurePrefs(context)
-
-    @Singleton
-    @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-                .client(buildOkHttpClient())
-                .baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create(getNetworkGson()))
-                .build()
+            .client(buildOkHttpClient())
+            .baseUrl("https://api.themoviedb.org/")
+            .addConverterFactory(GsonConverterFactory.create(getNetworkGson()))
+            .build()
     }
 
     internal open fun buildOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-            .build()
+        .build()
 }

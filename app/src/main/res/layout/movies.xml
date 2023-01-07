@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.example.elson.popmovies.data.model.MovieData" />
-        <variable name="model" type="MovieData" />
+        <import type="com.example.elson.popmovies.data.model.MovieModel" />
+        <variable name="model" type="MovieModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -51,7 +51,7 @@
                 style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{model.rating}"
+                android:text="@{model.getRatingString()}"
                 android:drawableStart="@drawable/ratings_icon"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -5,9 +5,11 @@ import com.example.elson.popmovies.ui.movies.grid.MoviesFragmentViewModel
 import dagger.Subcomponent
 
 @MoviesScope
-@Subcomponent(modules = [
-    MoviesModule::class
-])
+@Subcomponent(
+    modules = [
+        MoviesModule::class
+    ]
+)
 interface MoviesComponent {
 
     fun inject(viewModel: MoviesFragmentViewModel)
@@ -17,5 +19,4 @@ interface MoviesComponent {
     interface Factory {
         fun create(): MoviesComponent
     }
-
 }

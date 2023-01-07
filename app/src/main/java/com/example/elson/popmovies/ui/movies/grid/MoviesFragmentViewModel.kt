@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.enumeration.MovieTypes
-import com.example.elson.popmovies.data.model.MovieData
+import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.data.repository.MoviesRepository
 import com.paginate.Paginate
 import kotlinx.coroutines.launch
@@ -21,8 +21,8 @@ class MoviesFragmentViewModel : ViewModel(), Paginate.Callbacks {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _movieList = MutableLiveData<List<MovieData>>()
-    val movieList: LiveData<List<MovieData>> = _movieList
+    private val _movieList = MutableLiveData<List<MovieModel>>()
+    val movieList: LiveData<List<MovieModel>> = _movieList
 
     @Inject
     lateinit var moviesRepository: MoviesRepository
@@ -69,9 +69,9 @@ class MoviesFragmentViewModel : ViewModel(), Paginate.Callbacks {
 
     override fun hasLoadedAllItems() = currentPage == lastPage
 
-    fun toggleFavouriteState(movie: MovieData) {
+    fun toggleFavouriteState(movie: MovieModel) {
         viewModelScope.launch {
-            moviesRepository.toggleFavouriteStateAsync(movie).await()
+            moviesRepository.toggleFavouriteStateAsync(movie)
         }
     }
 }

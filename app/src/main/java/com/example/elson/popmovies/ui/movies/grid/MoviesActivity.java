@@ -1,21 +1,18 @@
 package com.example.elson.popmovies.ui.movies.grid;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentContainerView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.elson.popmovies.R;
 import com.example.elson.popmovies.data.SecurePrefs;
 import com.example.elson.popmovies.data.enumeration.MovieTypes;
-import com.example.elson.popmovies.data.model.MovieData;
+import com.example.elson.popmovies.data.model.MovieModel;
 import com.example.elson.popmovies.ui.movies.detail.MovieDetailActivity;
 import com.example.elson.popmovies.ui.movies.detail.MovieDetailFragment;
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity;
@@ -124,7 +121,7 @@ public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTa
     public void onTabReselected(TabLayout.Tab tab) {
     }
 
-    protected void showMovieDetails(@Nullable MovieData movie) {
+    protected void showMovieDetails(@Nullable MovieModel movie) {
         if (movie == null) {
             return;
         }

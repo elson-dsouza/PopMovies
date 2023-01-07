@@ -1,11 +1,16 @@
 package com.example.elson.popmovies.data.repository
 
 import com.example.elson.popmovies.BuildConfig
+import com.example.elson.popmovies.dagger.movies.MoviesScope
 import com.example.elson.popmovies.data.Result
-import com.example.elson.popmovies.data.model.MovieData
+import com.example.elson.popmovies.data.SecureDatabase
+import com.example.elson.popmovies.data.entity.MovieEntity
+import com.example.elson.popmovies.data.mapper.MovieDataMapper.toEntity
 import com.example.elson.popmovies.data.model.MovieListResult
+import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.network.Movies
-import io.realm.Realm
+import io.realm.kotlin.MutableRealm
+import io.realm.kotlin.UpdatePolicy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -13,16 +18,21 @@ import kotlinx.coroutines.coroutineScope
 import java.io.IOException
 import javax.inject.Inject
 
+@MoviesScope
 class MoviesRepository @Inject constructor(
-        private val movies: Movies
+    private val appDatabase: SecureDatabase,
+    private val movies: Movies
 ) {
 
     suspend fun fetchMoviesAsync(category: String, page: Int):
-            Deferred<Result<MovieListResult>> = coroutineScope {
+        Deferred<Result<MovieListResult>> = coroutineScope {
         async(Dispatchers.IO) {
             try {
-                val response = movies.getMovies(category,
-                        BuildConfig.TMDB_V3_API_TOKEN, page).execute()
+                val response = movies.getMovies(
+                    category,
+                    BuildConfig.TMDB_V3_API_TOKEN,
+                    page
+                ).execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {
@@ -34,41 +44,38 @@ class MoviesRepository @Inject constructor(
         }
     }
 
-    suspend fun toggleFavouriteStateAsync(movie: MovieData)  = coroutineScope {
-        async(Dispatchers.IO) {
-            Realm.getDefaultInstance()?.use { db ->
-                if (movie.isFavorite) {
-                    removeFromFavourites(movie, db)
-                } else {
-                    addToFavourites(movie, db)
-                }
+    suspend fun toggleFavouriteStateAsync(movie: MovieModel) =
+        appDatabase.realm.write {
+            if (movie.isFavorite.value == true) {
+                removeFromFavourites(movie)
+            } else {
+                addToFavourites(movie)
             }
         }
+
+    private fun MutableRealm.removeFromFavourites(movie: MovieModel) {
+        val movies = query(MovieEntity::class).query("id = $0", movie.id).find()
+        delete(movies)
     }
 
-    private fun removeFromFavourites(movie: MovieData, db: Realm) {
-        db.beginTransaction()
-        db.where(MovieData::class.java).equalTo("id", movie.id).findAll().deleteAllFromRealm()
-        db.commitTransaction()
-    }
-
-    private fun addToFavourites(movie: MovieData, db: Realm) {
-        db.beginTransaction()
-        db.copyToRealmOrUpdate(movie)
-        db.commitTransaction()
+    private fun MutableRealm.addToFavourites(movie: MovieModel) {
+        copyToRealm(movie.toEntity(), updatePolicy = UpdatePolicy.ALL)
     }
 
     suspend fun fetchMovieDetailsAsync(id: Long) = coroutineScope {
         async(Dispatchers.IO) {
             try {
-                val response = movies.getData(id,
-                        BuildConfig.TMDB_V3_API_TOKEN, "videos").execute()
+                val response = movies.getData(
+                    id,
+                    BuildConfig.TMDB_V3_API_TOKEN,
+                    "videos"
+                ).execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {
                     Result.Error(IOException(response.message()))
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 Result.Error(e)
             }
         }

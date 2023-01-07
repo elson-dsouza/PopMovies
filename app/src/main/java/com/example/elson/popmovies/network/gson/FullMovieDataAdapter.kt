@@ -6,30 +6,29 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import io.realm.RealmList
 import java.lang.reflect.Type
 
-class FullMovieDataAdapter: JsonDeserializer<RealmList<Video>> {
+class FullMovieDataAdapter : JsonDeserializer<List<Video>> {
 
     companion object {
         fun getTypeToken(): Type {
-            return object : TypeToken<RealmList<Video>>() {}.type
+            return object : TypeToken<List<Video>>() {}.type
         }
     }
 
     override fun deserialize(
-            json: JsonElement?,
-            typeOfT: Type?,
-            context: JsonDeserializationContext
-    ): RealmList<Video> {
-        json ?: return RealmList()
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext
+    ): List<Video> {
+        json ?: return mutableListOf()
         val jsonArray = if (json.isJsonObject) {
             (json as JsonObject).getAsJsonArray("results")
-        } else  {
+        } else {
             json.asJsonArray
         }
-        val videoList = jsonArray.map {
-            context.deserialize<Video>(it, Video::class.java) }.toTypedArray()
-        return RealmList(*videoList)
+        return jsonArray.map {
+            context.deserialize(it, Video::class.java)
+        }
     }
 }

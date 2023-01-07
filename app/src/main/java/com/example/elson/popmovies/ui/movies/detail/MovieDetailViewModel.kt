@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
-import com.example.elson.popmovies.data.model.MovieData
-import com.example.elson.popmovies.data.model.FullMovieData
+import com.example.elson.popmovies.data.model.MovieModel
+import com.example.elson.popmovies.data.model.FullMovieModel
 import com.example.elson.popmovies.data.repository.MoviesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,10 +17,10 @@ private const val LOG_TAG = "MovieDetailVM"
 
 class MovieDetailViewModel : ViewModel() {
 
-    private val _fullMovieData = MutableLiveData<FullMovieData>()
-    val fullMovieData: LiveData<FullMovieData> = _fullMovieData
+    private val _fullMovieModel = MutableLiveData<FullMovieModel>()
+    val fullMovieModel: LiveData<FullMovieModel> = _fullMovieModel
 
-    private val _movieData = MutableLiveData<MovieData>()
+    private val _movieModel = MutableLiveData<MovieModel>()
 
     @Inject
     lateinit var moviesRepository: MoviesRepository
@@ -29,12 +29,12 @@ class MovieDetailViewModel : ViewModel() {
         AppInjector.getMoviesComponent().inject(this)
     }
 
-    fun load(movie: MovieData) {
-        _movieData.value = movie
+    fun load(movie: MovieModel) {
+        _movieModel.value = movie
         viewModelScope.launch {
             val result = moviesRepository.fetchMovieDetailsAsync(movie.id).await()
             if (result is Result.Success) {
-                _fullMovieData.value = result.data
+                _fullMovieModel.value = result.data
             } else {
                 Log.e(LOG_TAG, "Unable to fetch movie details",
                         (result as Result.Error).exception)
@@ -44,7 +44,7 @@ class MovieDetailViewModel : ViewModel() {
 
     fun toggleFavouriteState() {
         viewModelScope.launch {
-            _movieData.value?.let { moviesRepository.toggleFavouriteStateAsync(it).await() }
+            _movieModel.value?.let { moviesRepository.toggleFavouriteStateAsync(it) }
         }
     }
 }

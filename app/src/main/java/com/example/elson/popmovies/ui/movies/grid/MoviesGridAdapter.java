@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elson.popmovies.BR;
 import com.example.elson.popmovies.R;
-import com.example.elson.popmovies.data.model.MovieData;
+import com.example.elson.popmovies.data.model.MovieModel;
 import com.example.elson.popmovies.databinding.MoviesBinding;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.MoviesViewHolder> {
 
-    private final List<MovieData> movieList;
+    private final List<MovieModel> movieList;
     private final MoviesFragment moviesFragment;
 
     public MoviesGridAdapter(@NonNull MoviesFragment moviesFragment) {
@@ -40,7 +40,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
 
     @Override
     public void onBindViewHolder(@NonNull final MoviesViewHolder movieViewHolder, int position) {
-        MovieData movie = movieList.get(position);
+        MovieModel movie = movieList.get(position);
         movieViewHolder.setMovieModel(movie);
         moviesFragment.loadMoviePoster(movie.getPoster(), movieViewHolder.getPosterView());
         movieViewHolder.setItemClickListener((view) -> moviesFragment.loadDetails(movie));
@@ -52,7 +52,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
         return movieList.size();
     }
 
-    public void add(@NonNull List<MovieData> data) {
+    public void add(@NonNull List<MovieModel> data) {
         movieList.addAll(data);
     }
 
@@ -68,7 +68,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
             this.moviesBinding = moviesBinding;
         }
 
-        void setMovieModel(@NonNull MovieData model) {
+        void setMovieModel(@NonNull MovieModel model) {
             moviesBinding.setModel(model);
             moviesBinding.notifyPropertyChanged(BR.model);
         }

@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.example.elson.popmovies.data.model.FullMovieData" />
-        <variable name="model" type="FullMovieData" />
+        <import type="com.example.elson.popmovies.data.model.FullMovieModel" />
+        <variable name="model" type="FullMovieModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -46,6 +46,7 @@
 
             <include
                 layout="@layout/movie_detail_content"
+                android:id="@+id/contentView"
                 app:model = "@{model}"/>
 
         </androidx.core.widget.NestedScrollView>

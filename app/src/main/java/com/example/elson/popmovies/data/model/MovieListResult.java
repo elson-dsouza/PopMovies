@@ -10,10 +10,10 @@ import java.util.List;
 public class MovieListResult {
 
     @SerializedName("page") int page;
-    @SerializedName("results") List<MovieData> result;
+    @SerializedName("results") List<MovieModel> result;
     @SerializedName("total_pages") int total;
 
-    public List<MovieData> getResult(){
+    public List<MovieModel> getResult(){
         return result;
     }
 
