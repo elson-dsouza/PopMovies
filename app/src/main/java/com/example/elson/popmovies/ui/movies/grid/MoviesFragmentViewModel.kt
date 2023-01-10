@@ -1,73 +1,50 @@
 package com.example.elson.popmovies.ui.movies.grid
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.enumeration.MovieTypes
 import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.data.repository.MoviesRepository
-import com.paginate.Paginate
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val LOG_TAG = "MoviesFragVM"
+private val DEFAULT_MODE = MovieTypes.POPULAR
 
-class MoviesFragmentViewModel : ViewModel(), Paginate.Callbacks {
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _movieList = MutableLiveData<List<MovieModel>>()
-    val movieList: LiveData<List<MovieModel>> = _movieList
+class MoviesFragmentViewModel : ViewModel() {
 
     @Inject
     lateinit var moviesRepository: MoviesRepository
 
-    var mode = MovieTypes.POPULAR
+    private val _currentMode = MutableStateFlow(DEFAULT_MODE)
+    val currentMode: StateFlow<MovieTypes> = _currentMode
+
+    val pagingDataFlow: Flow<PagingData<MovieModel>>
+
+    /**
+     * Processor of side effects from the UI which in turn feedback into [currentMode]
+     */
+    val accept: (MovieTypes) -> Unit
 
     init {
         AppInjector.getMoviesComponent().inject(this)
-    }
 
-    private var currentPage = 1
-    private var lastPage = 1
+        @OptIn(ExperimentalCoroutinesApi::class)
+        pagingDataFlow = currentMode
+            .flatMapLatest { moviesRepository.fetchMoviesList(it.queryPath) }
+            .cachedIn(viewModelScope)
 
-    fun refreshMovieList() {
-        _isLoading.value = true
-        currentPage = 1
-        lastPage = 1
-        _movieList.value = listOf()
-        fetchMoviesForPage(currentPage)
-    }
-
-    override fun onLoadMore() {
-        _isLoading.value = true
-        currentPage++
-        fetchMoviesForPage(currentPage)
-    }
-
-    private fun fetchMoviesForPage(pageNo: Int) {
-        viewModelScope.launch {
-            val result = moviesRepository
-                    .fetchMoviesAsync(mode.queryPath, pageNo).await()
-            if (result is Result.Success) {
-                currentPage = result.data.current
-                lastPage = result.data.total
-                _movieList.value = result.data.result
-            } else {
-                Log.e(LOG_TAG, "Error fetching movies", (result as Result.Error).exception)
-            }
-            _isLoading.value = false
+        accept = { action ->
+            viewModelScope.launch { _currentMode.emit(action) }
         }
     }
-
-    override fun isLoading(): Boolean = isLoading.value ?: false
-
-    override fun hasLoadedAllItems() = currentPage == lastPage
 
     fun toggleFavouriteState(movie: MovieModel) {
         viewModelScope.launch {

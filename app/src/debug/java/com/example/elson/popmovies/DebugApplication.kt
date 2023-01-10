@@ -1,14 +1,12 @@
 package com.example.elson.popmovies
 
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.dagger.app.DaggerAppComponent
-import com.example.elson.popmovies.dagger.app.DaggerAppComponent.factory
 import com.example.elson.popmovies.dagger.app.DaggerDebugAppComponent
 import com.facebook.stetho.Stetho
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 
-class DebugApplication: MoviesApplication() {
+class DebugApplication : MoviesApplication() {
 
     override fun onCreate() {
         super.onCreate()

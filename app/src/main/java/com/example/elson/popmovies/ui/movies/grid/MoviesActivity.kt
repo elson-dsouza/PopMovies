@@ -1,138 +1,93 @@
-package com.example.elson.popmovies.ui.movies.grid;
+package com.example.elson.popmovies.ui.movies.grid
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
+import com.example.elson.popmovies.R
+import com.example.elson.popmovies.data.SecurePrefs
+import com.example.elson.popmovies.data.enumeration.MovieTypes
+import com.example.elson.popmovies.data.model.MovieModel
+import com.example.elson.popmovies.databinding.ActivityPopMoviesBinding
+import com.example.elson.popmovies.ui.movies.detail.MovieDetailActivity
+import com.example.elson.popmovies.ui.movies.detail.MovieDetailFragment
+import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.lifecycle.ViewModelProvider;
+class MoviesActivity : BaseNavBarActivity(), OnTabSelectedListener {
 
-import com.example.elson.popmovies.R;
-import com.example.elson.popmovies.data.SecurePrefs;
-import com.example.elson.popmovies.data.enumeration.MovieTypes;
-import com.example.elson.popmovies.data.model.MovieModel;
-import com.example.elson.popmovies.ui.movies.detail.MovieDetailActivity;
-import com.example.elson.popmovies.ui.movies.detail.MovieDetailFragment;
-import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import dagger.android.AndroidInjection;
-
-public class MoviesActivity extends BaseNavBarActivity implements TabLayout.OnTabSelectedListener {
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.tabBar)
-    TabLayout tabBar;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.navDrawer)
-    DrawerLayout navDrawer;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.navView)
-    NavigationView navView;
-
-    @Nullable
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.movieDetailFragment)
-    FragmentContainerView movieDetailFragment;
-
+    private var mode = MovieTypes.POPULAR
+    private val activityViewModel by viewModels<MoviesActivityViewModel>()
+    private lateinit var binding: ActivityPopMoviesBinding
 
     @Inject
-    SecurePrefs prefs;
+    lateinit var prefs: SecurePrefs
 
-    @NonNull
-    private MovieTypes mode = MovieTypes.POPULAR;
+    override val drawerLayout: DrawerLayout
+        get() = binding.navDrawer
 
-    private MoviesActivityViewModel activityViewModel;
+    override val navigationView: NavigationView
+        get() = binding.navView
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
-        setContentView(R.layout.activity_pop_movies);
-        ButterKnife.bind(this);
-        super.onCreate(savedInstanceState);
-        mode = prefs.getMoviesMode();
-        tabBar.selectTab(tabBar.getTabAt(mode.ordinal()));
-        tabBar.addOnTabSelectedListener(this);
-        activityViewModel = (new ViewModelProvider(this)).get(MoviesActivityViewModel.class);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
-                    .commit();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_pop_movies)
+        super.onCreate(savedInstanceState)
+        mode = prefs.getMoviesMode()
+
+        binding.tabBar.apply {
+            selectTab(getTabAt(mode.ordinal))
+            addOnTabSelectedListener(this@MoviesActivity)
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        activityViewModel.getSelectedMovie().observe(this, this::showMovieDetails);
-    }
-
-    @Override
-    public void onBackPressed() {
-//        CustomYoutubeFragment youTubePlayerFragment = (CustomYoutubeFragment)
-//                getFragmentManager().findFragmentByTag(VideoAdapter.PLAYER);
-//        if (youTubePlayerFragment != null) {
-//            if (youTubePlayerFragment.isFullScreen()) {
-//                youTubePlayerFragment.setFullScreen(false);
-//                return;
-//            }
-//        }
-        super.onBackPressed();
-    }
-
-    @NonNull
-    @Override
-    public DrawerLayout getDrawerLayout() {
-        return navDrawer;
-    }
-
-    @NonNull
-    @Override
-    public NavigationView getNavigationView() {
-        return navView;
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        int position = tab.getPosition();
-        mode = MovieTypes.values()[position];
-        prefs.setMoviesMode(mode);
-        getSupportFragmentManager()
+        if (savedInstanceState == null) {
+            supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
-                .commit();
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-    }
-
-    protected void showMovieDetails(@Nullable MovieModel movie) {
-        if (movie == null) {
-            return;
+                .commit()
         }
-        if (movieDetailFragment == null) {
-            startActivity(MovieDetailActivity.getIntent(this, movie));
-            activityViewModel.clearSelectedMovie();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activityViewModel.selectedMovie.observe(this) { movie: MovieModel? ->
+            showMovieDetails(movie)
+        }
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        val position = tab.position
+        mode = MovieTypes.values()[position]
+        prefs.setMoviesMode(mode)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
+            .commit()
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+        // Do nothing
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {
+        // Do nothing
+    }
+
+    private fun showMovieDetails(movie: MovieModel?) {
+        if (movie == null) {
+            return
+        }
+        if (binding.movieDetailFragment == null) {
+            startActivity(MovieDetailActivity.getIntent(this, movie))
+            activityViewModel.clearSelectedMovie()
         } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.movieDetailFragment, MovieDetailFragment.newInstance(movie))
-                    .commit();
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.movieDetailFragment, MovieDetailFragment.newInstance(movie))
+                .commit()
         }
     }
 }

@@ -52,26 +52,18 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("com.jakewharton:butterknife:10.2.1")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.google.firebase:firebase-appindexing:20.0.0")
-    implementation("com.github.markomilos:paginate:1.0.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.5.4")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${KotlinDeps.kotlinVersion}")
     implementation("androidx.security:security-crypto:1.1.0-alpha04")
     implementation("com.github.bumptech.glide:glide:$glideVersion")
-    implementation("io.realm.kotlin:library-base:1.4.0")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-
-    kapt("com.jakewharton:butterknife-compiler:10.2.1")
-
     implementation("com.google.dagger:dagger:$daggerVersion")
     implementation("com.google.dagger:dagger-android:$daggerVersion")
     implementation("com.google.dagger:dagger-android-support:$daggerVersion")
@@ -81,6 +73,10 @@ dependencies {
     debugImplementation("com.facebook.stetho:stetho:1.6.0")
     debugImplementation("com.facebook.stetho:stetho-okhttp3:1.6.0")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
+
+    implementation(RealmDeps.realmDependency)
+    implementation(KotlinDeps.kotlinStdLibDependency)
+    implementation(PagingDeps.pagingDependency)
 }
 
 repositories {

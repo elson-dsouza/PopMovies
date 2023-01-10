@@ -19,20 +19,23 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-
 abstract class BaseNavBarActivity : AppCompatActivity() {
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     protected abstract val drawerLayout: DrawerLayout
     protected abstract val navigationView: NavigationView
     private val authenticationRepository = AppInjector
-            .getAuthenticationComponent().authenticationRepository()
+        .getAuthenticationComponent().authenticationRepository()
     private lateinit var headerView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout,
-                R.string.content_description_open_navbar, R.string.content_description_close_navbar)
+        actionBarDrawerToggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            R.string.content_description_open_navbar,
+            R.string.content_description_close_navbar
+        )
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

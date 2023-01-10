@@ -9,15 +9,22 @@ import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.data.enumeration.MovieTypes
 import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.databinding.MoviesFragmentBinding
-import com.paginate.Paginate
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val NUM_COLS = 2
 private const val ITEM_CACHE_SIZE = 32
@@ -36,34 +43,34 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    private lateinit var fragmentViewModel: MoviesFragmentViewModel
-    private lateinit var movieGridAdapter: MoviesGridAdapter
     private val activityViewModel: MoviesActivityViewModel by activityViewModels()
+    private val fragmentViewModel: MoviesFragmentViewModel by viewModels()
+    private lateinit var headerAdapter: MoviesLoadStateAdapter
+    private lateinit var movieGridAdapter: MoviesGridAdapter
     private lateinit var binding: MoviesFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val movieLayoutManager = GridLayoutManager(context, NUM_COLS)
+    ): View {
         movieGridAdapter = MoviesGridAdapter(this)
+        headerAdapter = MoviesLoadStateAdapter()
+        val footerAdapter = MoviesLoadStateAdapter()
+        val movieLayoutManager = GridLayoutManager(context, NUM_COLS)
+        movieLayoutManager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = when {
+                position == 0 && headerAdapter.itemCount > 0 -> NUM_COLS
+                position == movieGridAdapter.itemCount && footerAdapter.itemCount > 0 -> NUM_COLS
+                else -> 1
+            }
+        }
         binding = DataBindingUtil.inflate(inflater, R.layout.movies_fragment, container, false)
         binding.apply {
             // Initializing the Grid Recycler View
             movieGrid.layoutManager = movieLayoutManager
-            movieGrid.adapter = movieGridAdapter
+            movieGrid.adapter = movieGridAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
             movieGrid.setItemViewCacheSize(ITEM_CACHE_SIZE)
-
-            // Setup swipe to refresh
-            refreshLayout.setOnRefreshListener {
-                refreshLayout.isRefreshing = true
-                movieGridAdapter.clear()
-                fragmentViewModel.refreshMovieList()
-                fragmentViewModel.isLoading.observe(viewLifecycleOwner) {
-                    refreshLayout.isRefreshing = it
-                }
-            }
         }
         return binding.root
     }
@@ -72,19 +79,39 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mode = arguments?.getString(ARG_MOVIE_TYPE)?.let { MovieTypes.valueOf(it) }
             ?: MovieTypes.POPULAR
-        fragmentViewModel = ViewModelProvider(this).get(MoviesFragmentViewModel::class.java)
-        fragmentViewModel.mode = mode
-        fragmentViewModel.refreshMovieList()
+        fragmentViewModel.accept(mode)
 
-        // Setup pagination
-        Paginate.with(binding.movieGrid, fragmentViewModel)
-            .addLoadingListItem(true)
-            .setLoadingListItemSpanSizeLookup { NUM_COLS }
-            .build()
+        // Collect from the PagingData Flow in the ViewModel, and submit it to the
+        // PagingDataAdapter.
+        lifecycleScope.launch {
+            // We repeat on the STARTED lifecycle because an Activity may be PAUSED
+            // but still visible on the screen, for example in a multi window app
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                fragmentViewModel.pagingDataFlow.collectLatest {
+                    movieGridAdapter.submitData(it)
+                }
+            }
+        }
 
-        fragmentViewModel.movieList.observe(viewLifecycleOwner) {
-            movieGridAdapter.add(it)
-            movieGridAdapter.notifyDataSetChanged()
+        lifecycleScope.launch {
+            movieGridAdapter.loadStateFlow.collect { loadState ->
+                // Show a retry header if there was an error refreshing, and items were previously
+                // cached OR default to the default prepend state
+                headerAdapter.loadState = loadState.mediator
+                    ?.refresh
+                    ?.takeIf { it is LoadState.Error && headerAdapter.itemCount > 0 }
+                    ?: loadState.prepend
+
+                val errorState = loadState.source.refresh as? LoadState.Error
+                    ?: loadState.source.append as? LoadState.Error
+                    ?: loadState.source.prepend as? LoadState.Error
+                    ?: loadState.refresh as? LoadState.Error
+                    ?: loadState.append as? LoadState.Error
+                    ?: loadState.prepend as? LoadState.Error
+                errorState?.let {
+                    Snackbar.make(binding.root, "${it.error.message}", Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

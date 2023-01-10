@@ -13,14 +13,13 @@ import kotlinx.coroutines.coroutineScope
 import java.io.IOException
 import javax.inject.Inject
 
-
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
 class AuthenticationRepository @Inject constructor(
-        private val authentication: Authentication,
-        private val securePrefs: SecurePrefs
+    private val authentication: Authentication,
+    private val securePrefs: SecurePrefs
 ) {
 
     private var user: LoggedInUser? = null
@@ -53,7 +52,7 @@ class AuthenticationRepository @Inject constructor(
     }
 
     suspend fun generateRequestTokenAsync(
-            responseUrl: String
+        responseUrl: String
     ): Deferred<Result<RequestToken>> = coroutineScope {
         async(Dispatchers.IO) {
             val body = JsonObject().apply {
@@ -61,7 +60,7 @@ class AuthenticationRepository @Inject constructor(
             }
             try {
                 val response = authentication.requestToken(body = body)
-                        .execute()
+                    .execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {
@@ -70,12 +69,11 @@ class AuthenticationRepository @Inject constructor(
             } catch (e: IOException) {
                 Result.Error(e)
             }
-
         }
     }
 
     suspend fun requestAccessTokenAsync(
-            requestToken: String
+        requestToken: String
     ): Deferred<Result<LoggedInUser>> = coroutineScope {
         async(Dispatchers.IO) {
             val body = JsonObject().apply {
@@ -83,8 +81,8 @@ class AuthenticationRepository @Inject constructor(
             }
             try {
                 val response = authentication
-                        .accessToken(body = body)
-                        .execute()
+                    .accessToken(body = body)
+                    .execute()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
                 } else {
@@ -103,8 +101,8 @@ class AuthenticationRepository @Inject constructor(
             }
             try {
                 val response = authentication
-                        .logout(body = body)
-                        .execute()
+                    .logout(body = body)
+                    .execute()
                 resetCredentials()
                 if (response.isSuccessful) {
                     response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())

@@ -6,4 +6,5 @@ object KotlinDeps {
     val kotlinKaptPlugin by lazy { "kotlin-kapt" }
     val kotlinParcelizePlugin by lazy { "org.jetbrains.kotlin.plugin.parcelize" }
     val kotlinGradlePlugin by lazy { "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion" }
+    val kotlinStdLibDependency by lazy { "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion" }
 }
