@@ -2,7 +2,7 @@ package com.example.elson.popmovies.data.model
 
 import android.os.Parcelable
 import com.example.elson.popmovies.dagger.app.AppInjector
-import com.example.elson.popmovies.data.entity.MovieEntity
+import com.example.elson.popmovies.data.entity.database.MovieEntity
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 

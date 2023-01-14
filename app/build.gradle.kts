@@ -14,6 +14,11 @@ android {
 
     buildFeatures {
         dataBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = JetpackDeps.kotlinCompilerExtensionVersion
     }
 
     defaultConfig {
@@ -49,9 +54,6 @@ android {
 
 dependencies {
     implementation("androidx.annotation:annotation:1.5.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -60,9 +62,8 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.firebase:firebase-appindexing:20.0.0")
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.fragment:fragment-ktx:1.5.4")
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
     implementation("androidx.security:security-crypto:1.1.0-alpha04")
-    implementation("com.github.bumptech.glide:glide:$glideVersion")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("com.google.dagger:dagger:$daggerVersion")
     implementation("com.google.dagger:dagger-android:$daggerVersion")
@@ -74,9 +75,22 @@ dependencies {
     debugImplementation("com.facebook.stetho:stetho-okhttp3:1.6.0")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
 
+    implementation("com.github.bumptech.glide:glide:$glideVersion")
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+
     implementation(RealmDeps.realmDependency)
+
     implementation(KotlinDeps.kotlinStdLibDependency)
-    implementation(PagingDeps.pagingDependency)
+
+    implementation(platform(JetpackDeps.composeBomDependency))
+    implementation(JetpackDeps.material3Dependency)
+    implementation(JetpackDeps.pagingDependency)
+    implementation(JetpackDeps.pagingComposeDependency)
+    implementation(JetpackDeps.constraintLayoutDependency)
+    implementation(JetpackDeps.constraintLayoutComposeDependency)
+    implementation(JetpackDeps.composeLiveDataDependency)
+    implementation(JetpackDeps.liveDataDependency)
+    implementation(JetpackDeps.viewModelDependency)
 }
 
 repositories {

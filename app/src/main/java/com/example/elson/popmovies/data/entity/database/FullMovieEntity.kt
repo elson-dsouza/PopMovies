@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.data.entity
+package com.example.elson.popmovies.data.entity.database
 
 import com.example.elson.popmovies.data.model.Genre
 import com.example.elson.popmovies.data.model.Video

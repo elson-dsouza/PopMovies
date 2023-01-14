@@ -4,7 +4,8 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.elson.popmovies.BuildConfig
 import com.example.elson.popmovies.data.Result
-import com.example.elson.popmovies.data.model.MovieListResult
+import com.example.elson.popmovies.data.entity.network.MovieListNetworkEntity
+import com.example.elson.popmovies.data.mapper.network.MovieNetworkMapper.toModel
 import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.network.Movies
 import kotlinx.coroutines.Dispatchers
@@ -29,15 +30,16 @@ class MoviesPageSource(
         }
 
         return result.data.let {
+            val movieModelList = it.result.map { entity -> entity.toModel() }
             LoadResult.Page(
-                data = it.result,
+                data = movieModelList,
                 prevKey = it.current.getPrevPage(),
                 nextKey = it.current.getNextPage(result.data.total)
             )
         }
     }
 
-    private suspend fun fetchMoviesForPage(page: Int): Result<MovieListResult> {
+    private suspend fun fetchMoviesForPage(page: Int): Result<MovieListNetworkEntity> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = service.getMovies(

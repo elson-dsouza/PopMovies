@@ -9,6 +9,7 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
@@ -16,7 +17,7 @@ import com.example.elson.popmovies.ui.login.LoginActivity
 import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class BaseNavBarActivity : AppCompatActivity() {
@@ -70,7 +71,7 @@ abstract class BaseNavBarActivity : AppCompatActivity() {
     }
 
     private fun handleLogOut() {
-        MainScope().launch {
+        lifecycleScope.launch(Dispatchers.Main) {
             val result = authenticationRepository.logoutAsync().await()
             refreshNavBar()
             if (result is Result.Success) {

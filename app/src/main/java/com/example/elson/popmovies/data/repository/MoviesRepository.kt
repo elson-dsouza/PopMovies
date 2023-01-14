@@ -7,8 +7,8 @@ import com.example.elson.popmovies.BuildConfig
 import com.example.elson.popmovies.dagger.movies.MoviesScope
 import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.SecureDatabase
-import com.example.elson.popmovies.data.entity.MovieEntity
-import com.example.elson.popmovies.data.mapper.MovieDataMapper.toEntity
+import com.example.elson.popmovies.data.entity.database.MovieEntity
+import com.example.elson.popmovies.data.mapper.database.MovieDataMapper.toEntity
 import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.network.Movies
 import io.realm.kotlin.MutableRealm

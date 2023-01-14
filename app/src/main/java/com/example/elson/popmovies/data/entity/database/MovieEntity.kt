@@ -1,4 +1,4 @@
-package com.example.elson.popmovies.data.entity
+package com.example.elson.popmovies.data.entity.database
 
 import com.example.elson.popmovies.dagger.app.AppInjector
 import io.realm.kotlin.types.RealmObject

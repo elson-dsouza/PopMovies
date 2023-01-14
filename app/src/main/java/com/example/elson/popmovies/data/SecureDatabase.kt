@@ -1,7 +1,7 @@
 package com.example.elson.popmovies.data
 
-import com.example.elson.popmovies.data.entity.FullMovieEntity
-import com.example.elson.popmovies.data.entity.MovieEntity
+import com.example.elson.popmovies.data.entity.database.FullMovieEntity
+import com.example.elson.popmovies.data.entity.database.MovieEntity
 import com.example.elson.popmovies.data.model.Genre
 import com.example.elson.popmovies.data.model.Video
 import io.realm.kotlin.Realm

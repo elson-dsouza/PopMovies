@@ -3,7 +3,7 @@ package com.example.elson.popmovies.network;
 import androidx.annotation.NonNull;
 
 import com.example.elson.popmovies.data.model.FullMovieModel;
-import com.example.elson.popmovies.data.model.MovieListResult;
+import com.example.elson.popmovies.data.entity.network.MovieListNetworkEntity;
 import com.example.elson.popmovies.data.model.ReviewsHeader;
 
 import retrofit2.Call;
@@ -19,8 +19,8 @@ public interface Movies {
 
     @NonNull
     @GET("/3/movie/{category}")
-    Call<MovieListResult> getMovies(@Path("category") String category, @Query("api_key") String key,
-                                    @Query("page") int pg);
+    Call<MovieListNetworkEntity> getMovies(@Path("category") String category, @Query("api_key") String key,
+                                           @Query("page") int pg);
 
     @NonNull
     @GET("/3/movie/{id}")
