@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
-import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.data.model.FullMovieModel
+import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.data.repository.MoviesRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,8 +36,11 @@ class MovieDetailViewModel : ViewModel() {
             if (result is Result.Success) {
                 _fullMovieModel.value = result.data
             } else {
-                Log.e(LOG_TAG, "Unable to fetch movie details",
-                        (result as Result.Error).exception)
+                Log.e(
+                    LOG_TAG,
+                    "Unable to fetch movie details",
+                    (result as Result.Error).exception
+                )
             }
         }
     }

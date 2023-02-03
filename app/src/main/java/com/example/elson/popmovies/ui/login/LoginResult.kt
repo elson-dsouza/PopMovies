@@ -5,5 +5,5 @@ package com.example.elson.popmovies.ui.login
  */
 data class LoginResult(
     val success: Boolean? = null,
-    val error: Int? = null
+    val error: String? = null
 )

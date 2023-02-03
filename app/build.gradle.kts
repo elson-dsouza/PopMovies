@@ -53,8 +53,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.5.0")
-    implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("com.google.android.material:material:1.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -62,12 +60,12 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.firebase:firebase-appindexing:20.0.0")
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.fragment:fragment-ktx:1.5.5")
     implementation("androidx.security:security-crypto:1.1.0-alpha04")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("com.google.dagger:dagger:$daggerVersion")
     implementation("com.google.dagger:dagger-android:$daggerVersion")
     implementation("com.google.dagger:dagger-android-support:$daggerVersion")
+    implementation("androidx.window:window:1.0.0")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
     kapt("com.google.dagger:dagger-android-processor:$daggerVersion")
 
@@ -82,6 +80,11 @@ dependencies {
 
     implementation(KotlinDeps.kotlinStdLibDependency)
 
+    implementation("androidx.annotation:annotation:1.5.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
+    implementation("androidx.activity:activity-compose:1.6.1")
+
     implementation(platform(JetpackDeps.composeBomDependency))
     implementation(JetpackDeps.material3Dependency)
     implementation(JetpackDeps.pagingDependency)
@@ -91,6 +94,11 @@ dependencies {
     implementation(JetpackDeps.composeLiveDataDependency)
     implementation(JetpackDeps.liveDataDependency)
     implementation(JetpackDeps.viewModelDependency)
+
+    implementation("com.google.accompanist:accompanist-webview:0.28.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("androidx.compose.material3:material3-window-size-class")
 }
 
 repositories {

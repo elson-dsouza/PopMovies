@@ -1,93 +1,109 @@
 package com.example.elson.popmovies.ui.movies.grid
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
-import com.example.elson.popmovies.R
-import com.example.elson.popmovies.data.SecurePrefs
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.elson.popmovies.compose.FragmentContainer
 import com.example.elson.popmovies.data.enumeration.MovieTypes
-import com.example.elson.popmovies.data.model.MovieModel
-import com.example.elson.popmovies.databinding.ActivityPopMoviesBinding
+import com.example.elson.popmovies.theme.AppTheme
+import com.example.elson.popmovies.ui.ActivityDestinations
 import com.example.elson.popmovies.ui.movies.detail.MovieDetailActivity
 import com.example.elson.popmovies.ui.movies.detail.MovieDetailFragment
 import com.example.elson.popmovies.ui.navbar.BaseNavBarActivity
-import com.google.android.material.navigation.NavigationView
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import dagger.android.AndroidInjection
-import javax.inject.Inject
 
-class MoviesActivity : BaseNavBarActivity(), OnTabSelectedListener {
+class MoviesActivity : BaseNavBarActivity() {
 
-    private var mode = MovieTypes.POPULAR
-    private val activityViewModel by viewModels<MoviesActivityViewModel>()
-    private lateinit var binding: ActivityPopMoviesBinding
+    private val viewModel by viewModels<MoviesActivityViewModel>()
 
-    @Inject
-    lateinit var prefs: SecurePrefs
+    override val currentDestination: ActivityDestinations
+        get() = ActivityDestinations.MOVIES
 
-    override val drawerLayout: DrawerLayout
-        get() = binding.navDrawer
-
-    override val navigationView: NavigationView
-        get() = binding.navView
-
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_pop_movies)
         super.onCreate(savedInstanceState)
-        mode = prefs.getMoviesMode()
 
-        binding.tabBar.apply {
-            selectTab(getTabAt(mode.ordinal))
-            addOnTabSelectedListener(this@MoviesActivity)
+        setContent {
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
+            AppTheme {
+                val snackBarHostState = remember { SnackbarHostState() }
+                AppNavigationDrawer(drawerState = drawerState, snackBarHostState) {
+                    AppTopBar(drawerState = drawerState, snackBarHostState) { padding ->
+                        val windowSizeClass = calculateWindowSizeClass(this)
+                        val modifier = Modifier.padding(padding)
+                        if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
+                            MoviesGridSinglePane(modifier)
+                        } else {
+                            MoviesGridDualPane(modifier)
+                        }
+                    }
+                }
+            }
         }
-        if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
-                .commit()
+    }
+
+    @Composable
+    private fun MoviesGridSinglePane(modifier: Modifier) {
+        MoviesGridView(modifier)
+        val selectedMovie = viewModel.selectedMovie.observeAsState().value
+        if (selectedMovie != null) {
+            startActivity(MovieDetailActivity.getIntent(this, selectedMovie))
+            viewModel.clearSelectedMovie()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        activityViewModel.selectedMovie.observe(this) { movie: MovieModel? ->
-            showMovieDetails(movie)
+    @Composable
+    private fun MoviesGridDualPane(modifier: Modifier) {
+        Row(modifier) {
+            MoviesGridView(Modifier.width(334.dp))
+            // Crossfade between different detail posts
+            Crossfade(targetState = viewModel.selectedMovie.observeAsState()) { selectedMovie ->
+                // Get the lazy list state for this detail view
+                selectedMovie.value?.let { movie ->
+                    FragmentContainer(fragmentManager = supportFragmentManager) { id ->
+                        replace(id, MovieDetailFragment.newInstance(movie))
+                    }
+                }
+            }
         }
     }
 
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        val position = tab.position
-        mode = MovieTypes.values()[position]
-        prefs.setMoviesMode(mode)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.movieGridFragment, MoviesFragment.newInstance(mode))
-            .commit()
-    }
-
-    override fun onTabUnselected(tab: TabLayout.Tab) {
-        // Do nothing
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) {
-        // Do nothing
-    }
-
-    private fun showMovieDetails(movie: MovieModel?) {
-        if (movie == null) {
-            return
-        }
-        if (binding.movieDetailFragment == null) {
-            startActivity(MovieDetailActivity.getIntent(this, movie))
-            activityViewModel.clearSelectedMovie()
-        } else {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.movieDetailFragment, MovieDetailFragment.newInstance(movie))
-                .commit()
+    @Composable
+    private fun MoviesGridView(modifier: Modifier = Modifier) {
+        Column(modifier = modifier) {
+            val movieMode = viewModel.currentMode.collectAsState()
+            val selectedIndex = movieMode.value.ordinal
+            TabRow(selectedTabIndex = selectedIndex) {
+                MovieTypes.values().forEachIndexed { index, type ->
+                    Tab(
+                        selected = selectedIndex == index,
+                        onClick = { viewModel.updateMovieMode(type) },
+                        text = { Text(stringResource(id = type.nameRes)) }
+                    )
+                }
+            }
+            MoviesGridView(viewModel.pagingDataFlow, viewModel::loadDetails, viewModel::toggleFavouriteState)
         }
     }
 }

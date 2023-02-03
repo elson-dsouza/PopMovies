@@ -1,8 +1,8 @@
 package com.example.elson.popmovies.ui.splash
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.elson.popmovies.ui.movies.grid.MoviesActivity
 
 class SplashActivity : AppCompatActivity() {
