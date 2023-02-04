@@ -7,7 +7,7 @@ import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.entity.network.MovieListNetworkEntity
 import com.example.elson.popmovies.data.mapper.network.MovieNetworkMapper.toModel
 import com.example.elson.popmovies.data.model.MovieModel
-import com.example.elson.popmovies.network.Movies
+import com.example.elson.popmovies.data.network.Movies
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException

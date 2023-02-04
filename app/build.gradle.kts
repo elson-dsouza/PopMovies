@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.7.0")
+    implementation("com.google.android.material:material:1.8.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.cardview:cardview:1.0.0")
@@ -71,7 +71,7 @@ dependencies {
 
     debugImplementation("com.facebook.stetho:stetho:1.6.0")
     debugImplementation("com.facebook.stetho:stetho-okhttp3:1.6.0")
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
 
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
@@ -81,7 +81,7 @@ dependencies {
     implementation(KotlinDeps.kotlinStdLibDependency)
 
     implementation("androidx.annotation:annotation:1.5.0")
-    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.appcompat:appcompat:1.6.0")
     implementation("androidx.fragment:fragment-ktx:1.5.5")
     implementation("androidx.activity:activity-compose:1.6.1")
 

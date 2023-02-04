@@ -1,8 +1,8 @@
-package com.example.elson.popmovies.network;
+package com.example.elson.popmovies.data.network;
 
 import androidx.annotation.NonNull;
 
-import com.example.elson.popmovies.data.model.FullMovieModel;
+import com.example.elson.popmovies.data.entity.network.MovieDetailsNetworkEntity;
 import com.example.elson.popmovies.data.entity.network.MovieListNetworkEntity;
 import com.example.elson.popmovies.data.model.ReviewsHeader;
 
@@ -24,8 +24,8 @@ public interface Movies {
 
     @NonNull
     @GET("/3/movie/{id}")
-    Call<FullMovieModel> getData(@Path("id") long id, @Query("api_key") String key,
-                                 @Query("append_to_response") String responseAdditions);
+    Call<MovieDetailsNetworkEntity> getData(@Path("id") long id, @Query("api_key") String key,
+                                            @Query("append_to_response") String responseAdditions);
 
     @NonNull
     @GET("/3/movie/{id}/reviews")

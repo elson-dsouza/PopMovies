@@ -9,14 +9,14 @@ import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.SecureDatabase
 import com.example.elson.popmovies.data.entity.database.MovieEntity
 import com.example.elson.popmovies.data.mapper.database.MovieDataMapper.toEntity
+import com.example.elson.popmovies.data.mapper.network.MovieDetailsNetworkMapper.toModel
 import com.example.elson.popmovies.data.model.MovieModel
-import com.example.elson.popmovies.network.Movies
+import com.example.elson.popmovies.data.network.Movies
 import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.UpdatePolicy
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -55,22 +55,16 @@ class MoviesRepository @Inject constructor(
         copyToRealm(movie.toEntity(), updatePolicy = UpdatePolicy.ALL)
     }
 
-    suspend fun fetchMovieDetailsAsync(id: Long) = coroutineScope {
-        async(Dispatchers.IO) {
-            try {
-                val response = movies.getData(
-                    id,
-                    BuildConfig.TMDB_V3_API_TOKEN,
-                    "videos"
-                ).execute()
-                if (response.isSuccessful) {
-                    response.body()?.let { Result.Success(it) } ?: Result.Error(IOException())
-                } else {
-                    Result.Error(IOException(response.message()))
-                }
-            } catch (e: Exception) {
-                Result.Error(e)
+    suspend fun fetchMovieDetailsAsync(id: Long) = withContext(Dispatchers.IO) {
+        try {
+            val response = movies.getData(id, BuildConfig.TMDB_V3_API_TOKEN, "videos").execute()
+            if (response.isSuccessful) {
+                response.body()?.let { Result.Success(it.toModel()) } ?: Result.Error(IOException())
+            } else {
+                Result.Error(IOException(response.message()))
             }
+        } catch (e: Exception) {
+            Result.Error(e)
         }
     }
 }

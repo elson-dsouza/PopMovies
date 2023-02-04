@@ -1,6 +1,6 @@
 package com.example.elson.popmovies.dagger.app
 
-import com.example.elson.popmovies.network.gson.getNetworkGson
+import com.example.elson.popmovies.data.network.gson.getNetworkGson
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

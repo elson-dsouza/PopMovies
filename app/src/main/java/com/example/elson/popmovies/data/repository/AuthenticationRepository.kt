@@ -4,7 +4,7 @@ import com.example.elson.popmovies.data.Result
 import com.example.elson.popmovies.data.SecurePrefs
 import com.example.elson.popmovies.data.model.LoggedInUser
 import com.example.elson.popmovies.data.model.RequestToken
-import com.example.elson.popmovies.network.Authentication
+import com.example.elson.popmovies.data.network.Authentication
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

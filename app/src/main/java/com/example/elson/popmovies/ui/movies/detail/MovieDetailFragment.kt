@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.elson.popmovies.R
 import com.example.elson.popmovies.data.model.MovieModel
-import com.example.elson.popmovies.data.model.Video
+import com.example.elson.popmovies.data.model.VideoModel
 import com.example.elson.popmovies.databinding.MovieDetailFragmentBinding
 import com.google.android.material.chip.Chip
 
@@ -62,13 +62,13 @@ class MovieDetailFragment : Fragment() {
                 ?: error("Movie not passed in")
             viewModel.load(movie)
         }
-        viewModel.fullMovieModel.observe(viewLifecycleOwner) { movieDetails ->
+        viewModel.movieDetailsModel.observe(viewLifecycleOwner) { movieDetails ->
             movieDetailFragmentBinding.model = movieDetails
             movieDetailFragmentBinding.notifyPropertyChanged(BR.model)
             loadMovieImage(movieDetails.backdrop, movieDetailFragmentBinding.movieBackdrop)
             loadMovieImage(movieDetails.poster, movieDetailFragmentBinding.contentView.moviePoster)
             loadGenres(movieDetails.getGenresList())
-            loadVideos(movieDetails.getVideosList())
+            loadVideos(movieDetails.videos)
         }
         movieDetailFragmentBinding.contentView.favoriteButton.setOnClickListener {
             viewModel.toggleFavouriteState()
@@ -95,7 +95,7 @@ class MovieDetailFragment : Fragment() {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun loadVideos(videos: List<Video>) {
+    private fun loadVideos(videos: List<VideoModel>) {
         val activity = activity ?: return
         val displayMetrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(displayMetrics)

@@ -1,6 +1,6 @@
 package com.example.elson.popmovies.dagger.movies
 
-import com.example.elson.popmovies.network.Movies
+import com.example.elson.popmovies.data.network.Movies
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

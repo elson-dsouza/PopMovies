@@ -1,6 +1,6 @@
 object JetpackDeps {
-    private const val composeBomVersion = "2022.12.00"
-    const val kotlinCompilerExtensionVersion = "1.3.2"
+    private const val composeBomVersion = "2023.01.00"
+    const val kotlinCompilerExtensionVersion = "1.4.0"
 
     private const val pagingVersion = "3.1.1"
     private const val pagingJetpackComposeVersion = "1.0.0-alpha17"

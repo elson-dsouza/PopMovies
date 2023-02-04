@@ -1,5 +1,5 @@
 object KotlinDeps {
-    const val kotlinVersion = "1.7.20"
+    const val kotlinVersion = "1.8.0"
 
     val kotlinJvmPlugin by lazy { "org.jetbrains.kotlin.jvm" }
     val kotlinAndroidPlugin by lazy { "kotlin-android" }

@@ -15,8 +15,5 @@ data class MovieModel(
     @IgnoredOnParcel
     val isFavorite: LiveData<Boolean> = MutableLiveData(false)
 ) : Parcelable {
-
-    fun getRatingString(): String {
-        return "$rating/10"
-    }
+    val ratingString: String get() = "$rating/10"
 }

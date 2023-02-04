@@ -2,7 +2,7 @@ package com.example.elson.popmovies.dagger.authentication
 
 import com.example.elson.popmovies.data.repository.AuthenticationRepository
 import com.example.elson.popmovies.data.SecurePrefs
-import com.example.elson.popmovies.network.Authentication
+import com.example.elson.popmovies.data.network.Authentication
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -19,8 +19,8 @@ class AuthenticationModule {
     @AuthenticationScope
     @Provides
     fun provideAuthenticationRepository(
-            authentication: Authentication,
-            securePrefs: SecurePrefs
+        authentication: Authentication,
+        securePrefs: SecurePrefs
     ): AuthenticationRepository {
         return AuthenticationRepository(authentication, securePrefs)
     }

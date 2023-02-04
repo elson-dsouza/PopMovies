@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.elson.popmovies.dagger.app.AppInjector
 import com.example.elson.popmovies.data.Result
-import com.example.elson.popmovies.data.model.FullMovieModel
+import com.example.elson.popmovies.data.model.MovieDetailsModel
 import com.example.elson.popmovies.data.model.MovieModel
 import com.example.elson.popmovies.data.repository.MoviesRepository
 import kotlinx.coroutines.launch
@@ -17,8 +17,8 @@ private const val LOG_TAG = "MovieDetailVM"
 
 class MovieDetailViewModel : ViewModel() {
 
-    private val _fullMovieModel = MutableLiveData<FullMovieModel>()
-    val fullMovieModel: LiveData<FullMovieModel> = _fullMovieModel
+    private val _movieDetailsModel = MutableLiveData<MovieDetailsModel>()
+    val movieDetailsModel: LiveData<MovieDetailsModel> = _movieDetailsModel
 
     private val _movieModel = MutableLiveData<MovieModel>()
 
@@ -32,9 +32,9 @@ class MovieDetailViewModel : ViewModel() {
     fun load(movie: MovieModel) {
         _movieModel.value = movie
         viewModelScope.launch {
-            val result = moviesRepository.fetchMovieDetailsAsync(movie.id).await()
+            val result = moviesRepository.fetchMovieDetailsAsync(movie.id)
             if (result is Result.Success) {
-                _fullMovieModel.value = result.data
+                _movieDetailsModel.value = result.data
             } else {
                 Log.e(
                     LOG_TAG,

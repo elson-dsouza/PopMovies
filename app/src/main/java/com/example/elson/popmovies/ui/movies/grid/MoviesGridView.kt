@@ -125,7 +125,7 @@ private fun MovieGridItem(
             modifier = Modifier.layoutId("movie_rating_icon").padding(start = 4.dp).widthIn(max = 24.dp)
         )
         Text(
-            text = movie.getRatingString(),
+            text = movie.ratingString,
             modifier = Modifier.layoutId("movie_rating").padding(horizontal = 4.dp).wrapContentSize(),
             style = MaterialTheme.typography.bodyMedium
         )
